@@ -14,7 +14,10 @@ typedef enum {
     CIRCULO,
     RETANGULO,
     LINHA,
-    TEXTO
+    TEXTO,
+    SEGMENTO,
+    VERTICE,
+    PONTO
 }TipoForma;
 
 /*
@@ -103,9 +106,11 @@ int getMaiorId();
 
 /// @brief Clona uma forma com um novo ID.
 /// @param p Ponteiro para forma que será clonada.
+/// @param dx Deslocamento da coordenada x a partir da forma clonada.
+/// @param dy Deslocamento da coordenada y a partir da forma clonada.
 /// @return Ponteiro para forma clonada (novo Pacote).
 /// @warning
-Pacote clonarForma(Pacote p);
+Pacote clonarForma(Pacote p,double dx,double dy);
 
 /// @brief Libera a memória alocada para o pacote e a forma interna.
 /// @param p Ponteiro para o pacote analisado.

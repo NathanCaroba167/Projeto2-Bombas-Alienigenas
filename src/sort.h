@@ -9,7 +9,7 @@
  Módulo encarregado de coordenar um sort com operação de ordenar.
  */
 
-typedef int (*Comparador)(Vertice, Vertice);
+typedef int (*ComparadorV)(const void* a, const void* b);
 
 /// @brief Ordena um vetor de vertices de acordo com seu ângulo.
 /// @param vetor Vetor que será ordenado.
@@ -19,6 +19,6 @@ typedef int (*Comparador)(Vertice, Vertice);
 /// @param metodo Tipo de ordenação a ser usado (q: qsort ou m: mergesort).
 /// @param limiteInsertion Limite de elementos para começar ordenar com insertionsort.
 /// @warning
-void ordenarVetor(void* vetor, size_t numElementos, size_t tamanhoElemento, Comparador comp, char metodo, int limiteInsertion);
+void ordenarVetor(void* vetor, size_t numElementos, size_t tamanhoElemento, ComparadorV comp, char metodo, int limiteInsertion);
 
 #endif //SORT_H

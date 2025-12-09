@@ -5,6 +5,8 @@
 #ifndef GEO_H
 #define GEO_H
 
+#include "lista.h"
+
 /*
  Módulo encarregado de ler um arquivo (.geo) e inicializar as formas com as operações de abrir e criar
  */
@@ -20,10 +22,10 @@ typedef char* Nome;
 /// @return Ponteiro para o arquivo que foi aberto.
 Arquivo abrirGeo(Nome arquivo);
 
-/// @brief Cria formas e estilo lidos do (.geo) e coloca as formas no chao.
+/// @brief Cria formas e estilo lidos do (.geo) e coloca as formas na lista.
 /// @param geo Ponteiro para o arquivo (.geo) que será lido.
 /// @param forma Ponteiro para a Lista (forma) que receberá as formas.
 /// @param EstiloPonteiro Ponteiro para o Estilo global do texto (será alocado se o comando 'ts' for encontrado).
-void criarFormasNoChao(Arquivo geo,Lista forma,Estilo* EstiloPonteiro);
+void criarFormasNaLista(Arquivo geo,Lista forma,Estilo* EstiloPonteiro);
 
 #endif //GEO_H

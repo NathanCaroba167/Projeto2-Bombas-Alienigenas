@@ -5,6 +5,9 @@
 #ifndef VERTICES_H
 #define VERTICES_H
 
+#include "segmento.h"
+#include "lista.h"
+
 /*
  Módulo encarregado de coordenar vertices com operações de criar, get, criarVetor e eliminar
  */
@@ -79,6 +82,6 @@ void eliminarVertice(Vertice v);
 /// @param yBomba Coordenada y da queda da bomba.
 /// @return Ponteiro para o vetor de vertices.
 /// @warning
-Vetor CriarVetorVertices(Lista anteparo, double xBomba, double yBomba);
+Vetor CriarVetorVertices(Lista anteparo, double xBomba, double yBomba, int* qtdVertices);
 
 #endif //VERTICES_H

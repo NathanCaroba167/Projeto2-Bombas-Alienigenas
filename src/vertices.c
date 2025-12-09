@@ -5,16 +5,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 #include <errno.h>
 
+#include "segmento.h"
 #include "forma.h"
 #include "lista.h"
-#include "texto.h"
-#include "geo.h"
-#include "segmento.h"
 #include "vertices.h"
-
-#include <math.h>
 
 typedef struct {
     double x,y;
@@ -73,18 +70,19 @@ void eliminarVertice(Vertice v) {
     free(ver);
 }
 
-Vetor CriarVetorVertices(Lista anteparo, double xBomba, double yBomba) {
+Vetor CriarVetorVertices(Lista anteparo, double xBomba, double yBomba, int* qtdVertices) {
 
     int qtdSegmentos = getTamanhoLista(anteparo);
-    int qtdVertices = qtdSegmentos * 2;
+    *qtdVertices = qtdSegmentos * 2;
 
-    vertice* Vertices = malloc(sizeof(Vertice) * qtdVertices);
+    Vertice* Vertices = malloc(sizeof(Vertice) * (*qtdVertices));
     if (Vertices == NULL) {
-        printf("Erro ao alocar memoria ao criarEstoqueVertices!\n");
+        printf("Erro ao alocar memória ao CriarVetorVertices!\n");
 
         perror("Motivo do erro");
         exit(1);
     }
+
     int i = 0;
     pont atual = getPrimeiroElementoLista(anteparo);
     while (atual != NULL) {
@@ -103,42 +101,22 @@ Vetor CriarVetorVertices(Lista anteparo, double xBomba, double yBomba) {
         double dist2 = hypot(x2 - xBomba, y2 - yBomba);
 
         if (ang1 < ang2) {
-            Vertices[i].x = x1;
-            Vertices[i].y = y1;
-            Vertices[i].angulo = ang1;
-            Vertices[i].distancia = dist1;
-            Vertices[i].tipo = INICIO;
-            Vertices[i].original = seg;
+            Vertices[i] = CriarVertice(x1, y1, ang1, dist1, INICIO, seg);
             i++;
 
-            Vertices[i].x = x2;
-            Vertices[i].y = y2;
-            Vertices[i].angulo = ang2;
-            Vertices[i].distancia = dist2;
-            Vertices[i].tipo = FIM;
-            Vertices[i].original = seg;
+            Vertices[i] = CriarVertice(x2, y2, ang2, dist2, FIM, seg);
             i++;
         }
         else {
-            Vertices[i].x = x2;
-            Vertices[i].y = y2;
-            Vertices[i].angulo = ang2;
-            Vertices[i].distancia = dist2;
-            Vertices[i].tipo = INICIO;
-            Vertices[i].original = seg;
+            Vertices[i] = CriarVertice(x2, y2, ang2, dist2, INICIO, seg);
             i++;
 
-            Vertices[i].x = x1;
-            Vertices[i].y = y1;
-            Vertices[i].angulo = ang1;
-            Vertices[i].distancia = dist1;
-            Vertices[i].tipo = FIM;
-            Vertices[i].original = seg;
+            Vertices[i] = CriarVertice(x1, y1, ang1, dist1, FIM, seg);
             i++;
         }
 
         atual = getProximoElementoLista(atual);
     }
-    return Vertices;
+    return (Vetor)Vertices;
 }
 

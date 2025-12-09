@@ -61,27 +61,27 @@ double getY1Linha(Linha l);
 /// @warning
 void setY1Linha(Linha l, double y1);
 
-/// @brief Pega a coordenada x do ponto do início da linha sem modifica-la.
+/// @brief Pega a coordenada x do ponto de fim da linha sem modifica-la.
 /// @param l Ponteiro para a linha analisada.
-/// @return Um double que representa a coordenada x do ponto do início da linha.
+/// @return Um double que representa a coordenada x do ponto do fim da linha.
 /// @warning
 double getX2Linha(Linha l);
 
-/// @brief Define a nova coordenada x do ponto do início da linha.
+/// @brief Define a nova coordenada x do ponto do fim da linha.
 /// @param l Ponteiro para a linha onde a coordenada x será definida.
-/// @param x2 Nova coordenada x do ponto de início da linha que será definida.
+/// @param x2 Nova coordenada x do ponto de fim da linha que será definida.
 /// @warning
 void setX2Linha(Linha l, double x2);
 
-/// @brief Pega a coordenada y do ponto do início da linha sem modifica-la.
+/// @brief Pega a coordenada y do ponto do fim da linha sem modifica-la.
 /// @param l Ponteiro para a linha analisada.
-/// @return Um double que representa a coordenada y do ponto do início da linha.
+/// @return Um double que representa a coordenada y do ponto do fim da linha.
 /// @warning
 double getY2Linha(Linha l);
 
-/// @brief Define a nova coordenada y do ponto do início da linha.
+/// @brief Define a nova coordenada y do ponto do fim da linha.
 /// @param l Ponteiro para a linha onde a coordenada y será definida.
-/// @param y2 Nova coordenada y do ponto de início da linha que será definida.
+/// @param y2 Nova coordenada y do ponto de fim da linha que será definida.
 /// @warning
 void setY2Linha(Linha l, double y2);
 

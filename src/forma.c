@@ -4,13 +4,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 #include <errno.h>
+
+#include "forma.h"
+#include "lista.h"
 
 #include "circulo.h"
 #include "retangulo.h"
 #include "linha.h"
 #include "texto.h"
-#include "forma.h"
+#include "segmento.h"
+#include "poligono.h"
+#include "vertices.h"
+
 
 static int MAIOR_ID = 0;
 
@@ -43,7 +50,7 @@ TipoForma getTipoForma(Pacote p) {
 
 }
 
-double getAreaForma(Pacote p) {
+double getAreaForma(Pacote p) { //*
     TipoForma tipo = getTipoForma(p);
     Forma g = getDadosForma(p);
     switch (tipo) {
@@ -77,6 +84,8 @@ int getIDForma(Pacote p) {
             return getIDLinha(g);
         case TEXTO:
             return getIDTexto(g);
+        case SEGMENTO:
+            return getIDSegmento(g);
         default:
             printf("ERRO: tipo inválido!\n");
             return 0;
@@ -96,6 +105,12 @@ double getXForma(Pacote p) {
             return fmin(getX1Linha(g),getX2Linha(g));
         case TEXTO:
             return getXTexto(g);
+        case SEGMENTO:
+            return fmin(getX1Segmento(g),getX2Segmento(g));
+        case VERTICE:
+            return getXVertice(g);
+        case PONTO:
+            return getXPonto(g);
         default:
             printf("ERRO: tipo inválido!\n");
             return 0.0;
@@ -124,6 +139,22 @@ double getYForma(Pacote p) {
             return getY2Linha(g);
         case TEXTO:
             return getYTexto(g);
+        case SEGMENTO:
+            double menorXS = fmin(getX1Segmento(g),getX2Segmento(g));
+
+            if (getX1Segmento(g) == getX2Segmento(g)) {
+                return fmin(getY1Segmento(g),getY2Segmento(g));
+            }
+
+            if (menorXS == getX1Segmento(g)) {
+                return getY1Segmento(g);
+            }
+
+            return getY2Segmento(g);
+        case VERTICE:
+            return getYVertice(g);
+        case PONTO:
+            return getYPonto(g);
         default:
             printf("ERRO: tipo inválido!\n");
             return 0.0;
@@ -146,6 +177,8 @@ char* getCorBForma(Pacote p) {
             return getCorLinha(g);
         case TEXTO:
             return getCorBTexto(g);
+        case SEGMENTO:
+            return getCorSegmento(g);
         default:
             printf("ERRO: tipo inválido!\n");
             return NULL;
@@ -169,6 +202,8 @@ char* getCorPForma(Pacote p) {
             return CorComplementarLinha(g);
         case TEXTO:
             return getCorPTexto(g);
+        case SEGMENTO:
+            exit(1);
         default:
             printf("ERRO: tipo inválido!\n");
             return NULL;
@@ -195,6 +230,9 @@ void setCorBForma(Pacote p, char* corB) {
         case TEXTO:
             setCorBTexto(g,corB);
             break;
+        case SEGMENTO:
+            setCorSegmento(g,corB);
+            break;
         default:
             printf("ERRO: tipo inválido!\n");
             return;
@@ -220,6 +258,8 @@ void setCorPForma(Pacote p, char* corP) {
         case TEXTO:
             setCorPTexto(g,corP);
             break;
+        case SEGMENTO:
+            break;
         default:
             printf("ERRO: tipo inválido!\n");
             return;
@@ -234,7 +274,7 @@ int getMaiorId() {
     return MAIOR_ID;
 }
 
-Pacote clonarForma(Pacote p) {
+Pacote clonarForma(Pacote p,double dx,double dy) {
     TipoForma tipo = getTipoForma(p);
 
     int novo_id = getMaiorId();
@@ -243,8 +283,8 @@ Pacote clonarForma(Pacote p) {
         case CIRCULO: {
             Circulo c = getDadosForma(p);
             Circulo clone = CriarCirculo(novo_id,
-                getXCirculo(c),
-                getYCirculo(c),
+                getXCirculo(c) + dx,
+                getYCirculo(c) + dy,
                 getRCirculo(c),
                 getCorBCirculo(c),
                 getCorPCirculo(c));
@@ -254,8 +294,8 @@ Pacote clonarForma(Pacote p) {
         case RETANGULO: {
             Retangulo r = getDadosForma(p);
             Retangulo clone = CriarRetangulo(novo_id,
-                getXRetangulo(r),
-                getYRetangulo(r),
+                getXRetangulo(r) + dx,
+                getYRetangulo(r) + dy,
                 getWRetangulo(r),
                 getHRetangulo(r),
                 getCorBRetangulo(r),
@@ -266,10 +306,10 @@ Pacote clonarForma(Pacote p) {
         case LINHA: {
             Linha l = getDadosForma(p);
             Linha clone = CriarLinha(novo_id,
-                getX1Linha(l),
-                getY1Linha(l),
-                getX2Linha(l),
-                getY2Linha(l),
+                getX1Linha(l) + dx,
+                getY1Linha(l) + dy,
+                getX2Linha(l) + dx,
+                getY2Linha(l) + dy,
                 getCorLinha(l));
             MAIOR_ID++;
             return CriarPacote(clone,LINHA);
@@ -277,14 +317,26 @@ Pacote clonarForma(Pacote p) {
         case TEXTO: {
             Texto t = getDadosForma(p);
             Texto clone = CriarTexto(novo_id,
-                getXTexto(t),
-                getYTexto(t),
+                getXTexto(t) + dx,
+                getYTexto(t) + dy,
                 getCorBTexto(t),
                 getCorPTexto(t),
                 getATexto(t),
                 getTxtoTexto(t));
             MAIOR_ID++;
             return CriarPacote(clone,TEXTO);
+        }
+        case SEGMENTO: {
+            Segmento s = getDadosForma(p);
+            Segmento clone = CriarSegmento(novo_id,
+                getX1Segmento(s) + dx,
+                getY1Segmento(s) + dy,
+                getX2Segmento(s) + dx,
+                getY2Segmento(s) + dy,
+                getCorSegmento(s),
+                ANTEPARO);
+            MAIOR_ID++;
+            return CriarPacote(clone,SEGMENTO);
         }
         default:
             printf("ERRO: tipo inválido!\n");
@@ -311,6 +363,15 @@ void liberarForma(Pacote p) {
             break;
         case TEXTO:
             eliminarTexto(g);
+            break;
+        case SEGMENTO:
+            eliminarSegmento(g);
+            break;
+        case VERTICE:
+            eliminarVertice(g);
+            break;
+        case PONTO:
+            eliminarPonto(g);
             break;
         default:
             printf("ERRO: tipo inválido encontrado em liberarForma!\n");

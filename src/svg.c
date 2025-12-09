@@ -14,11 +14,10 @@
 #include "segmento.h"
 #include "forma.h"
 
+#include "poligono.h"
 #include "lista.h"
 #include "txt.h"
 #include "svg.h"
-
-#include "poligono.h"
 
 Arquivo abrirSVG(Nome arquivo) {
     Arquivo svg = fopen(arquivo,"w");
@@ -195,14 +194,15 @@ void desenharBombaSVG(Arquivo svg, double x, double y) {
 void desenharPoligonoSVG(Arquivo svg, Poligono p) {
     if (svg == NULL || p == NULL) return;
 
-    fprintf(svg, "<polygon points=\"");
+    fprintf(svg, "\t<polygon points=\"");
     Lista pontos = getListaPontosPoligono(p);
 
     pont atual = getPrimeiroElementoLista(pontos);
     while (atual != NULL) {
-        Ponto pt = getPacoteElementoLista(atual);
+        Pacote pac = getPacoteElementoLista(atual);
+        Ponto pt = getDadosForma(pac);
         fprintf(svg, "%lf,%lf ", getXPonto(pt), getYPonto(pt));
-        atual = getProximoElementoLista(pontos);
+        atual = getProximoElementoLista(atual);
     }
 
     fprintf(svg, "\" fill=\"yellow\" opacity=\"0.5\" stroke=\"none\" />\n");
@@ -236,6 +236,7 @@ void desenharFormasDaLista(Arquivo svg, Lista formas, Estilo EstiloGlobalTexto) 
                 break;
             case SEGMENTO:
                 desenharSegmentoSVG(svg, forma);
+                break;
             default:
                 printf("ERRO: tipo inválido!\n");
                 break;
@@ -256,5 +257,4 @@ void fecharSVG(Arquivo svg) {
 
 void gerarSVG(Lista formas, Arquivo arqSvg,Estilo EstiloGlobalTexto) {
     desenharFormasDaLista(arqSvg, formas,EstiloGlobalTexto);
-    fecharSVG(arqSvg);
 }

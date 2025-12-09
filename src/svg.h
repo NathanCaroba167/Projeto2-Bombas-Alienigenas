@@ -5,6 +5,14 @@
 #ifndef SVG_H
 #define SVG_H
 
+#include "circulo.h"
+#include "retangulo.h"
+#include "linha.h"
+#include "texto.h"
+#include "segmento.h"
+#include "poligono.h"
+#include "lista.h"
+
 /*
  Módulo encarregado de gerar um arquivo SVG a partir das formas presentes e executar os comandos com as operações de abrir,
  inicializar, desenhar, gerar e fechar
@@ -65,6 +73,12 @@ void desenharSegmentoSVG(Arquivo svg, Segmento s);
 /// @param y Coordenada y da bomba.
 /// @warning
 void desenharBombaSVG(Arquivo svg, double x, double y);///
+
+/// @brief Desenha um poligono que representa a região de visibilidade da bomba lançada.
+/// @param svg Ponteiro para o arquivo que receberá o desenho.
+/// @param p Ponteiro para o poligono analisado.
+/// @warning
+void desenharPoligonoSVG(Arquivo svg, Poligono p);
 
 /// @brief Desenha todas as formas presentes na lista da área no arquivo SVG.
 /// @param svg Ponteiro para o arquivo SVG que receberá o desenho.

@@ -5,13 +5,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <error.h>
 
-#include "vertices.h"
 #include "sort.h"
 
-void insertionSort(void* vetor, size_t n, size_t tamElem, Comparador comp) {
+void insertionSort(void* vetor, size_t n, size_t tamElem, ComparadorV comp) {
     char* arr = (char*)vetor;
     char* temp = malloc(tamElem);
+    if (temp == NULL) {
+        printf("Erro ao alocar memória ao insertionSort!\n");
+
+        perror("Motivo do erro");
+        exit(1);
+    }
 
     if (!temp) return;
 
@@ -30,7 +37,7 @@ void insertionSort(void* vetor, size_t n, size_t tamElem, Comparador comp) {
     free(temp);
 }
 
-void merge(void* vetor, size_t meio, size_t n, size_t tamElem, Comparador comp) {
+void merge(void* vetor, size_t meio, size_t n, size_t tamElem, ComparadorV comp) {
     char* arr = (char*)vetor;
 
     size_t i = 0;
@@ -38,6 +45,12 @@ void merge(void* vetor, size_t meio, size_t n, size_t tamElem, Comparador comp) 
     size_t k = 0;
 
     char* aux = malloc(n * tamElem);
+    if (aux == NULL) {
+        printf("Erro ao alocar memória ao merge!\n");
+
+        perror("Motivo do erro");
+        exit(1);
+    }
     if (!aux) return;
 
     while (i < meio && j < n) {
@@ -68,7 +81,7 @@ void merge(void* vetor, size_t meio, size_t n, size_t tamElem, Comparador comp) 
     free(aux);
 }
 
-void mergeSortRecursivo(void* vetor, size_t n, size_t tamElem, Comparador comp, int limiteIns) {
+void mergeSortRecursivo(void* vetor, size_t n, size_t tamElem, ComparadorV comp, int limiteIns) {
     if (n <= (size_t)limiteIns) {
         insertionSort(vetor, n, tamElem, comp);
         return;
@@ -82,11 +95,11 @@ void mergeSortRecursivo(void* vetor, size_t n, size_t tamElem, Comparador comp, 
     merge(vetor, meio, n, tamElem, comp);
 }
 
-void ordenarVetor(void* vetor, size_t numElementos, size_t tamanhoElemento, Comparador comp, char metodo, int limiteInsertion) {
+void ordenarVetor(void* vetor, size_t numElementos, size_t tamanhoElemento, ComparadorV comp, char metodo, int limiteInsertion) {
     if (numElementos <= 1) return;
 
     if (metodo == 'q' || metodo == 'Q') {
-        qsort(vetor, numElementos, tamanhoElemento,(int(*)(const void*, const void*)) comp);
+        qsort(vetor, numElementos, tamanhoElemento, comp);
     }
     else if (metodo == 'm' || metodo == 'M') {
         mergeSortRecursivo(vetor, numElementos, tamanhoElemento, comp, limiteInsertion);

@@ -6,10 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <errno.h>
 
 #include "segmento.h"
-
-#include "forma.h"
 
 typedef struct {
     int id;
@@ -22,7 +21,9 @@ typedef struct {
 Segmento CriarSegmento(int id, double x1, double y1, double x2, double y2, char* cor,TipoSegmento tipo) {
     segmento* seg = (segmento*) malloc (sizeof(segmento));
     if (seg == NULL) {
-        printf("Erro ao alocar memória ao criarSegmento!\n");
+        printf("Erro ao alocar memória ao CriarSegmento!\n");
+
+        perror("Motivo do erro");
         exit(1);
     }
 
@@ -37,6 +38,7 @@ Segmento CriarSegmento(int id, double x1, double y1, double x2, double y2, char*
         printf("Erro ao alocar memória ao criar cor do segmento!\n");
         free(seg);
 
+        perror("Motivo do erro");
         exit(1);
     }
     strcpy (seg->cor, cor);
@@ -88,7 +90,7 @@ void setCorSegmento(Segmento s, char* cor) {
     segmento* seg = (segmento*)s;
     seg->cor = realloc (seg->cor,strlen(cor) + 1);
     if (seg->cor == NULL) {
-        printf("Erro ao realocar memoria!\n");
+        printf("Erro ao realocar memória da cor do segmento!\n");
 
         perror("Motivo do erro");
         exit(1);
@@ -108,6 +110,8 @@ double calcTamanhoSegmento(Segmento s) {
 }
 
 double orientacaoTresPontos(double x1, double y1, double x2, double y2, double px, double py) {
+    // Fórmula do Produto Vetorial (Cross Product) 2D
+    // (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x)
     return (x2 - x1) * (py - y1) - (y2 - y1) * (px - x1);
 }
 

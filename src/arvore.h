@@ -5,6 +5,8 @@
 #ifndef ARVORE_H
 #define ARVORE_H
 
+#include "segmento.h"
+
 /*
  Módulo encarregado de executar e coordenar uma árvore com operações de criar, inserir, remover, get, buscar, 'arvoreavazia' e liberar
  */
@@ -28,12 +30,6 @@ Arvore CriarArvore(Comparador c);
 /// @param s Ponteiro para o Segmento que será ligado.
 /// @warning
 void inserirArvore(Arvore a, Segmento s);
-
-/// @brief
-/// @param no
-/// @return
-/// @warning
-pontArvore pontMaisEsquerda(pontArvore no);
 
 /// @brief Remove o Segmento da árvore e libera o nó da árvore.
 /// @param a Ponteiro para árvore que será retirada o Segmento.

@@ -15,8 +15,6 @@
 #include "segmento.h"
 #include "forma.h"
 
-#include "lista.h"
-
 #include "geo.h"
 #include "txt.h"
 
@@ -117,6 +115,7 @@ void reportarForma(Arquivo txt,Pacote p) {
                 getX2Segmento(s),
                 getY2Segmento(s),
                 getCorSegmento(s));
+            break;
         default:
             printf("ERRO: tipo inválido!\n");
             break;

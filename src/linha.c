@@ -91,7 +91,7 @@ void setCorLinha(Linha l, char* cor) {
     linha* lin = (linha*)l;
     lin->cor = realloc (lin->cor,strlen(cor) + 1);
     if (lin->cor == NULL) {
-        printf("Erro ao realocar memoria!\n");
+        printf("Erro ao realocar memoria ao setCorLinha!\n");
 
         perror("Motivo do erro");
         exit(1);

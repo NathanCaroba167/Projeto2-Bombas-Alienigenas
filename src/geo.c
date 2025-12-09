@@ -31,7 +31,7 @@ Arquivo abrirGeo(Nome arquivo) {
     return geo;
 }
 
-void criarFormasNoChao(Arquivo geo, Lista forma,Estilo* EstiloPonteiro) {
+void criarFormasNaLista(Arquivo geo, Lista forma,Estilo* EstiloPonteiro) {
     if (geo == NULL || forma == NULL || EstiloPonteiro == NULL) {
         printf("ERRO: Argumentos NULL em criarFormasNoChao.\n");
         return;
@@ -69,7 +69,7 @@ void criarFormasNoChao(Arquivo geo, Lista forma,Estilo* EstiloPonteiro) {
                     maiorID = id;
                 }
                 Circulo c = CriarCirculo(id, x, y, r, corB, corP);
-                inserirLista(forma ,CriarPacote(c,CIRCULO));
+                inserirListaFim(forma ,CriarPacote(c,CIRCULO));
             }
         }else if (strcmp(comando, "r") == 0) {
             char* id_temp = strtok(NULL," ");
@@ -90,7 +90,7 @@ void criarFormasNoChao(Arquivo geo, Lista forma,Estilo* EstiloPonteiro) {
                     maiorID = id;
                 }
                 Retangulo r = CriarRetangulo(id, x, y, w, h, corB, corP);
-                inserirLista(forma,CriarPacote(r,RETANGULO));
+                inserirListaFim(forma,CriarPacote(r,RETANGULO));
             }
         }else if (strcmp(comando, "l") == 0) {
             char* id_temp = strtok(NULL," ");
@@ -110,7 +110,7 @@ void criarFormasNoChao(Arquivo geo, Lista forma,Estilo* EstiloPonteiro) {
                     maiorID = id;
                 }
                 Linha l = CriarLinha(id, x, y, x2, y2, cor);
-                inserirLista(forma,CriarPacote(l,LINHA));
+                inserirListaFim(forma,CriarPacote(l,LINHA));
             }
         }else if (strcmp(comando, "t") == 0) {
             char* id_temp = strtok(NULL," ");
@@ -136,7 +136,7 @@ void criarFormasNoChao(Arquivo geo, Lista forma,Estilo* EstiloPonteiro) {
                     maiorID = id;
                 }
                 Texto t = CriarTexto(id, x, y, corB, corP, a, txto);
-                inserirLista(forma,CriarPacote(t,TEXTO));
+                inserirListaFim(forma,CriarPacote(t,TEXTO));
             }
         }else if (strcmp(comando, "ts") == 0) {
             char* fFamily  = strtok(NULL," ");

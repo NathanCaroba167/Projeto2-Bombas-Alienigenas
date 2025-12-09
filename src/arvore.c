@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <error.h>
 
 #include "segmento.h"
 #include "arvore.h"
@@ -25,6 +26,8 @@ Arvore CriarArvore(Comparador c) {
     arvore* a = (arvore*)malloc(sizeof(arvore));
     if(a == NULL){
         printf("Erro ao alocar elemento\n");
+
+        perror("Motivo do erro");
         exit(1);
     }
 
@@ -37,6 +40,13 @@ Arvore CriarArvore(Comparador c) {
 pontArvore inserirRec(pontArvore raiz, Segmento s, Comparador comp) {
     if(raiz == NULL) {
         pontArvore novo = malloc(sizeof(No));
+        if (novo == NULL) {
+            printf("Erro ao alocar memória ao inserirRec!\n");
+
+            perror("Motivo do erro");
+            exit(1);
+        }
+
         novo->segmento = s;
         novo->esquerdo = NULL;
         novo->direito = NULL;
@@ -154,8 +164,10 @@ void liberarRec(pontArvore raiz) {
 
 void liberarArvore(Arvore a) {
     arvore* arv = (arvore*)a;
-    if (arv->raiz != NULL) {
-        liberarRec(arv->raiz);
+    if (arv != NULL) {
+        if (arv->raiz != NULL) {
+            liberarRec(arv->raiz);
+        }
         free(arv);
     }
 }

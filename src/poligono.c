@@ -30,6 +30,12 @@ typedef struct {
 
 Ponto CriarPonto(double x, double y) {
     ponto* p = (ponto*)malloc(sizeof(ponto));
+    if (p == NULL) {
+        printf("Erro ao alocar memória ao CriarPonto!\n");
+
+        perror("Motivo do erro");
+        exit(1);
+    }
     p->x = x;
     p->y = y;
     return p;
@@ -48,9 +54,15 @@ void eliminarPonto(Ponto p) {
 }
 
 Poligono CriarPoligono() {
-    poligono* poly = malloc(sizeof(poligono));
-    poly->pontos = iniciarLista();
-    return poly;
+    poligono* poli = malloc(sizeof(poligono));
+    if (poli == NULL) {
+        printf("Erro ao alocar memória ao CriarPoligono!\n");
+
+        perror("Motivo do erro");
+        exit(1);
+    }
+    poli->pontos = iniciarLista();
+    return poli;
 }
 
 void adicionarPontoAoPoligono(Poligono p, Ponto pt) {
@@ -77,6 +89,12 @@ bool pontoDentroPoligono(Poligono p, double px, double py) {
     }
 
     Ponto* vet = malloc(sizeof(Ponto) * n);
+    if (vet == NULL) {
+        printf("Erro ao alocar memória ao pontoDentroPoligono!\n");
+
+        perror("Motivo do erro");
+        exit(1);
+    }
     int k = 0;
 
     pont atual = getPrimeiroElementoLista(poli->pontos);
@@ -127,39 +145,39 @@ bool verificarSobreposicao(Poligono p, Pacote forma) {
             return false;
         }
         case CIRCULO: {
-            double x = getXCirculo(forma);
-            double y = getYCirculo(forma);
+            double x = getXCirculo(form);
+            double y = getYCirculo(form);
 
             return pontoDentroPoligono(p, x, y);
         }
         case LINHA: {
-            double x1 = getX1Linha(forma);
-            double y1 = getY1Linha(forma);
-            double x2 = getX2Linha(forma);
-            double y2 = getY2Linha(forma);
+            double x1 = getX1Linha(form);
+            double y1 = getY1Linha(form);
+            double x2 = getX2Linha(form);
+            double y2 = getY2Linha(form);
             return pontoDentroPoligono(poli, x1, y1) || pontoDentroPoligono(p, x2, y2);
         }
         case SEGMENTO: {
-            double x1 = getX1Segmento(forma);
-            double y1 = getY1Segmento(forma);
-            double x2 = getX2Segmento(forma);
-            double y2 = getY2Segmento(forma);
+            double x1 = getX1Segmento(form);
+            double y1 = getY1Segmento(form);
+            double x2 = getX2Segmento(form);
+            double y2 = getY2Segmento(form);
 
             return pontoDentroPoligono(poli, x1, y1) || pontoDentroPoligono(p, x2, y2);
         }
         case TEXTO: {
-             double x = getXTexto(forma);
-             double y = getYTexto(forma);
+             double x = getXTexto(form);
+             double y = getYTexto(form);
              return pontoDentroPoligono(poli, x, y);
         }
         case VERTICE: {
-            double x = getXVertice(forma);
-            double y = getYVertice(forma);
+            double x = getXVertice(form);
+            double y = getYVertice(form);
             return pontoDentroPoligono(poli, x, y);
         }
         case PONTO: {
-            double x = getXPonto(forma);
-            double y = getYPonto(forma);
+            double x = getXPonto(form);
+            double y = getYPonto(form);
             return pontoDentroPoligono(poli, x, y);
         }
     }

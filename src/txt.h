@@ -5,6 +5,8 @@
 #ifndef TXT_H
 #define TXT_H
 
+#include "forma.h"
+
 /*
  Módulo encarregado de criar um arquivo (.txt) e reportar os resultados de comandos com as operações de abrir e reportar
  */
