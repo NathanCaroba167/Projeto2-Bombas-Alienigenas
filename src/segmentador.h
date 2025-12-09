@@ -5,6 +5,17 @@
 #ifndef SEGMENTADOR_H
 #define SEGMENTADOR_H
 
+#include "circulo.h"
+#include "retangulo.h"
+#include "linha.h"
+#include "texto.h"
+#include "txt.h"
+#include "lista.h"
+
+/*
+ Módulo encarregado de executar e coordenar um segmentador com operações de converte para para tipo de forma.
+ */
+
 /// @brief Converte um Circulo em um Segmento.
 /// @param txt Ponteiro para o arquivo TXT (que indicará a formas do processo).
 /// @param c Ponteiro para o círculo analisado.
