@@ -11,15 +11,17 @@
 #include "retangulo.h"
 #include "linha.h"
 #include "texto.h"
-#include "lista.h"
 #include "forma.h"
+#include "lista.h"
 #include "txt.h"
 #include "arquivos.h"
 #include "geo.h"
 #include "qry.h"
 #include "svg.h"
 
-#define MAX_CAMINHO 256
+#define MAX_CAMINHO 128
+#define MAX_CAMINHO1 256
+#define MAX_CAMINHO2 512
 
 // O estilo deve ser inicializado antes de ser passado para criarFormasNoChao
 static Estilo EstiloGlobalTexto = NULL;
@@ -30,10 +32,12 @@ int main(int argc, char* argv[]) {
     char* nomeArqGeo = NULL; // -f
     char* nomeArqQry = NULL; // -q
     char* dirSaida = NULL; // -o
+    char* nomeTipoOrdenacao = NULL; // -to
+    char* limiteInsertion = NULL; // -i
 
     // Variáveis de Estruturas de Dados
-    Lista forma = NULL;
-    Lista anteparo = NULL;
+    Lista formas = NULL;
+    Lista anteparos = NULL;
 
     // Análise de argumentos
     for (int i = 1; i < argc; i++) {
@@ -49,9 +53,26 @@ int main(int argc, char* argv[]) {
         } else if (strcmp(argv[i], "-q") == 0 && i + 1 < argc) {
             nomeArqQry = argv[i + 1];
             i++;
+        }else if (strcmp(argv[i], "-to") == 0 && i + 1 < argc) {
+            nomeTipoOrdenacao = argv[i + 1];
+            i++;
+        }else if (strcmp(argv[i], "-i") == 0 && i + 1 < argc) {
+            limiteInsertion = argv[i + 1];
+            i++;
         }else {
             printf("Parametro '%s' inválido!!\n", argv[i]);
         }
+    }
+
+    char tipoOrd = 'q'; // Default: QuickSort
+    int limIns = 10; // Default: 10
+
+    if (nomeTipoOrdenacao != NULL && strlen(nomeTipoOrdenacao) > 0) {
+        tipoOrd = nomeTipoOrdenacao[0];
+    }
+
+    if (limiteInsertion != NULL) {
+        limIns = atoi(limiteInsertion);
     }
 
     if (nomeArqGeo == NULL || dirSaida == NULL) {
@@ -78,8 +99,9 @@ int main(int argc, char* argv[]) {
 
     // Construção de caminhos qry (se existir)
     char caminhoCompletoQry[MAX_CAMINHO];
-    char caminhoSaidaSvgFinal[MAX_CAMINHO];
-    char caminhoSaidaTxt[MAX_CAMINHO];
+    char caminhoSaidaSvgFinal[MAX_CAMINHO2];
+    char caminhoSaidaTxt[MAX_CAMINHO2];
+    char caminhoBaseSaida[MAX_CAMINHO1];
     if (nomeArqQry != NULL) {
         if (dirEntrada != NULL) {
             snprintf(caminhoCompletoQry,MAX_CAMINHO, "%s/%s", dirEntrada, nomeArqQry);
@@ -96,8 +118,10 @@ int main(int argc, char* argv[]) {
         char nomeCombinado[MAX_CAMINHO];
         snprintf(nomeCombinado,MAX_CAMINHO, "%s-%s", nomeBaseGeo, nomeBaseQry);
 
-        snprintf(caminhoSaidaSvgFinal,MAX_CAMINHO, "%s/%s.svg", dirSaida, nomeCombinado);
-        snprintf(caminhoSaidaTxt,MAX_CAMINHO, "%s/%s.txt", dirSaida, nomeCombinado);
+        snprintf(caminhoBaseSaida,MAX_CAMINHO1, "%s/%s", dirSaida, nomeCombinado);
+
+        snprintf(caminhoSaidaSvgFinal,MAX_CAMINHO2, "%s.svg", caminhoBaseSaida);
+        snprintf(caminhoSaidaTxt,MAX_CAMINHO2, "%s.txt", caminhoBaseSaida);
 
         free(nomeBaseQry);
     }
@@ -113,7 +137,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    forma = iniciarLista();
+    formas = iniciarLista();
 
 
     // Execução do fluxo .geo
@@ -121,11 +145,11 @@ int main(int argc, char* argv[]) {
     arqGeo = abrirGeo(caminhoCompletoGeo);
     if (arqGeo == NULL) {
         printf("ERRO: ao tentar abrir o arquivo .geo");
-        liberarLista(forma);
+        liberarLista(formas);
         return 1;
     }
 
-    criarFormasNaLista(arqGeo, forma,&EstiloGlobalTexto);
+    criarFormasNaLista(arqGeo, formas,&EstiloGlobalTexto);
     fclose(arqGeo);
 
     // Geração do SVG Inicial
@@ -133,9 +157,10 @@ int main(int argc, char* argv[]) {
     arqSvg = abrirSVG(caminhoSaidaSvgInicial);
     inicializarSVG(arqSvg);
 
-    gerarSVG(forma,arqSvg,EstiloGlobalTexto);
+    gerarSVG(formas,arqSvg,EstiloGlobalTexto);
+    fecharSVG(arqSvg);
 
-    anteparo = iniciarLista();
+    anteparos = iniciarLista();
     // Execução do fluxo .qry (se especificado)
     if (nomeArqQry != NULL) {
         Arquivo arqQry = NULL;
@@ -147,17 +172,18 @@ int main(int argc, char* argv[]) {
         inicializarSVG(arqSvgFinal);
         if (arqQry == NULL) {
             printf("ERRO: ao tentar abrir o arquivo .qry");
-            liberarLista(forma);
-            liberarLista(anteparo);
+            liberarLista(formas);
+            liberarLista(anteparos);
             return 1;
         }
-        LerComandosExecutar(arqSvgFinal, arqTxt, arqQry, forma, anteparo);
+        LerComandosExecutar(arqSvgFinal, arqTxt, arqQry, formas, anteparos, tipoOrd, limIns, caminhoBaseSaida);
         fclose(arqQry);
         fclose(arqTxt);
 
         // Geração do SVG Final
-        gerarSVG(forma,arqSvgFinal,EstiloGlobalTexto);
-        gerarSVG(anteparo,arqSvgFinal,EstiloGlobalTexto);
+        gerarSVG(formas,arqSvgFinal,EstiloGlobalTexto);
+        gerarSVG(anteparos,arqSvgFinal,EstiloGlobalTexto);
+        fecharSVG(arqSvgFinal);
         fclose(arqSvgFinal);
     }
 
@@ -165,8 +191,8 @@ int main(int argc, char* argv[]) {
 
     // Limpeza da memória
     printf("Limpando a memória ...\n");
-    liberarLista(forma);
-    liberarLista(anteparo);
+    liberarLista(formas);
+    liberarLista(anteparos);
     if (EstiloGlobalTexto != NULL) {
         eliminarEstilo(EstiloGlobalTexto);
     }
