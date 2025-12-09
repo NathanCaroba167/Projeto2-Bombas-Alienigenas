@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <error.h>
+
 #include "forma.h"
 #include "lista.h"
 
@@ -15,12 +17,22 @@ typedef struct Elemento{
 typedef Elemento* pont;
 
 typedef struct{
+    int tamanho;
     pont inicio;
+    pont fim;
 }lista;
 
 Lista iniciarLista() {
     lista* l = (lista*)malloc(sizeof(lista));
+    if(l == NULL){
+        printf("Erro ao alocar memória ao iniciarLista!\n");
+
+        perror("Motivo do erro");
+        exit(1);
+    }
     l->inicio = NULL;
+    l->fim = NULL;
+    l->tamanho = 0;
     return l;
 }
 
@@ -28,41 +40,45 @@ void inserirListaInicio(Lista l, Pacote p){
     lista* ls = (lista*)l;
     pont novo = malloc(sizeof(Elemento));
     if(novo == NULL){
-        printf("Erro ao alocar elemento\n");
+        printf("Erro ao alocar memória ao inserirListaInicio!\n");
+
+        perror("Motivo do erro");
         return;
     }
     novo->form = p;
     novo->prox = ls->inicio;
     ls->inicio = novo;
+    if (ls->fim == NULL) {
+        ls->fim = novo;
+    }
+    ls->tamanho++;
 }
 
 void inserirListaFim(Lista l, Pacote p) {
     lista* ls = (lista*)l;
+    if (ls->inicio == NULL) {
+        inserirListaInicio(l,p);
+        return;
+    }
     pont novo = malloc(sizeof(Elemento));
     if(novo == NULL) {
-        printf("Erro ao alocar elemento\n");
+        printf("Erro ao alocar memória ao inserirListaFim!\n");
+
+        perror("Motivo do erro");
         return;
     }
     novo->form = p;
     novo->prox = NULL;
-
-    if(ls->inicio == NULL){
-        ls->inicio = novo;
-        return;
-    }
-
-    pont atual = ls->inicio;
-    while(atual->prox != NULL){
-        atual = atual->prox;
-    }
-    atual->prox = novo;
+    ls->fim->prox = novo;
+    ls->fim = novo;
+    ls->tamanho++;
 }
 
-void remover_elemento(Lista l, Pacote p){
+void removerElementoLista(Lista l, Pacote p){
     lista* ls = (lista*)l;
     if(ls->inicio == NULL){
         printf("Nao e possivel excluir algo de uma lista vazia\n");
-        exit(1);
+        return;
     }
     pont atual = ls->inicio;
     pont anterior = NULL;
@@ -71,15 +87,24 @@ void remover_elemento(Lista l, Pacote p){
         atual = atual->prox;
     }
     if(atual == NULL){
-        exit(1);
+        return;
 
     }
     if(anterior == NULL){
         ls->inicio = atual->prox;
+
+        if (ls->inicio == NULL) {
+            ls->fim = NULL;
+        }
     }else{
         anterior->prox = atual->prox;
+
+        if (atual == ls->fim) {
+            ls->fim = anterior;
+        }
     }
     free(atual);
+    ls->tamanho--;
 }
 
 Pacote getPorIdLista(Lista l, int id) {
@@ -88,7 +113,7 @@ Pacote getPorIdLista(Lista l, int id) {
     while(atual != NULL){
         if(getIDForma(atual->form) == id){
             printf("Elemento %d encontrado!\n",id);
-            return atual;
+            return atual->form;
         }
         atual = atual->prox;
     }
@@ -100,7 +125,7 @@ void removerPorIdLista(Lista l, int id) {
     lista* ls = (lista*)l;
     if(ls->inicio == NULL){
         printf("Nao e possivel excluir algo de uma lista vazia\n");
-        exit(1);
+        return;
     }
     pont atual = ls->inicio;
     pont anterior = NULL;
@@ -109,18 +134,21 @@ void removerPorIdLista(Lista l, int id) {
         atual = atual->prox;
     }
     if(atual == NULL){
-        exit(1);
+        return;
     }
     if(anterior == NULL){
         ls->inicio = atual->prox;
+        if(ls->inicio == NULL) {
+            ls->fim = NULL;
+        }
     }else{
         anterior->prox = atual->prox;
+        if(atual == ls->fim) {
+            ls->fim = anterior;
+        }
     }
     free(atual);
-}
-
-pont getProximoElementoLista(pont p) {
-    return p->prox;
+    ls->tamanho--;
 }
 
 pont getPrimeiroElementoLista(Lista l) {
@@ -128,17 +156,49 @@ pont getPrimeiroElementoLista(Lista l) {
     return LISTA->inicio;
 }
 
+pont getProximoElementoLista(pont p) {
+    return p->prox;
+}
+
 pont getUltimoElementoLista(Lista l) {
     lista* LISTA = (lista*)l;
-    if (LISTA->inicio == NULL) {
-        return NULL;
+    return LISTA->fim;
+}
+
+Pacote getPrimeiraFormaLista(Lista l) {///
+    lista* LISTA = (lista*)l;
+    return LISTA->inicio->form;
+}
+
+Pacote getPacoteElementoLista(pont p) {
+    return p->form;
+}
+
+void concatenaListas(Lista l1, Lista l2) {
+    lista* a = (lista*)l1;
+    lista* b = (lista*)l2;
+
+    if (b->inicio == NULL) {
+        printf("Lista b vazia, erro de concatenacao!");
+        return;
+    }
+    if (a->inicio == NULL) {
+        a->inicio = b->inicio;
+        a->fim = b->fim;
+    } else {
+        a->fim->prox = b->inicio;
+        a->fim = b->fim;
     }
 
-    pont atual = LISTA->inicio;
-    while(atual->prox != NULL){
-        atual = atual->prox;
-    }
-    return atual;
+    a->tamanho += b->tamanho;
+    b->inicio = NULL;
+    b->fim = NULL;
+    b->tamanho = 0;
+}
+
+int getTamanhoLista(Lista l) {
+    lista* ls = (lista*)l;
+    return ls->tamanho;
 }
 
 bool listavazia(Lista l) {
@@ -150,9 +210,15 @@ void liberarLista(Lista l){
     lista* ls = (lista*)l;
     pont atual = ls->inicio;
     while(atual != NULL){
-        ls->inicio = atual->prox;
-        free(atual);
-        atual = ls->inicio;
+        pont temp = atual;
+        atual = atual->prox;
+        if (temp->form != NULL) {
+            liberarForma(getPacoteElementoLista(temp));
+        }
+        free(temp);
     }
     ls->inicio = NULL;
+    ls->fim = NULL;
+    ls->tamanho = 0;
+    free(ls);
 }

@@ -5,6 +5,8 @@
 #ifndef LISTA_H
 #define LISTA_H
 
+#include "forma.h"
+
 /*
  Módulo encarregado de executar e coordenar uma lista com operações de iniciar, inserir, remover, getPorID e removerPorId, 'listavazia' e liberar
  */
@@ -36,7 +38,7 @@ void inserirListaFim(Lista l, Pacote p);
 /// @param l Ponteiro para lista que será retirada a forma.
 /// @param p Ponteiro para o Pacote que será removido.
 /// @warning
-void remover_elemento(Lista l, Pacote p);
+void removerElementoLista(Lista l, Pacote p);
 
 /// @brief Pega o Pacote do elemento da lista.
 /// @param l Ponteiro para o elemento (nó) da lista.
@@ -68,6 +70,23 @@ pont getPrimeiroElementoLista(Lista l);
 /// @return Ponteiro para o último elemento.
 /// @warning
 pont getUltimoElementoLista(Lista l);
+
+/// @brief Pega o pacote de um elemento da lista.
+/// @param p Ponteiro para o elemento analisado.
+/// @return Ponteiro para o pacote do elemento.
+/// @warning
+Pacote getPacoteElementoLista(pont p);
+
+/// @brief Concatena a lista l2 na lista l1.
+/// @param l1 Ponteiro para a lista que receberá a concatenação.
+/// @param l2 Ponteiro para a lista que será concatenada.
+/// @warning
+void concatenaListas(Lista l1, Lista l2);
+
+/// @brief Pega a quantidade de elementos da lista.
+/// @param l Ponteiro para a lista analisada.
+/// @return O tamanho da lista.
+int getTamanhoLista(Lista l);
 
 /// @brief Verifica se a lista esta vazia.
 /// @param l Ponteiro para lista que será verificada.
