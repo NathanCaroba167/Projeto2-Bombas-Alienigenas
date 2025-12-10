@@ -9,15 +9,8 @@
 #include <errno.h>
 #include <math.h>
 
-#include "circulo.h"
-#include "linha.h"
-#include "retangulo.h"
-#include "texto.h"
-#include "forma.h"
-
 #include "lista.h"
 #include "txt.h"
-#include "svg.h"
 #include "bombas.h"
 #include "qry.h"
 
@@ -34,7 +27,7 @@ Arquivo abrirQry(Nome arquivo) {
     return qry;
 }
 
-void LerComandosExecutar(Arquivo svg,Arquivo txt,Arquivo qry,Lista formas,Lista anteparos,char tipoOrd,int limIns) {
+void LerComandosExecutar(Arquivo svg,Arquivo txt,Arquivo qry,Lista formas,Lista anteparos,char tipoOrd,int limIns, char* caminhoBaseSaida) {
     char buffer[TAMANHO_MAX_BUFFER];
 
     while(fgets(buffer,sizeof(buffer),qry) != NULL) {
@@ -70,6 +63,7 @@ void LerComandosExecutar(Arquivo svg,Arquivo txt,Arquivo qry,Lista formas,Lista 
                 }
 
                 Anteparo(txt,formas,anteparos,i,j,dir_modo);
+                printf("DEBUG QRY: Voltou de Anteparo.\n"); fflush(stdout);
             }
         }else if (strcmp(comando, "d") == 0) {
             char* x_temp = strtok(NULL," ");
@@ -87,8 +81,9 @@ void LerComandosExecutar(Arquivo svg,Arquivo txt,Arquivo qry,Lista formas,Lista 
                     printf("Erro: sem parâmetro para direção do circulo!!");
                     exit(1);
                 }
-
-                Destruicao(svg,txt,formas,anteparos,x,y,sfx_modo, tipoOrd, limIns);
+                printf("DEBUG QRY: Executando Destruicao...\n"); fflush(stdout);
+                Destruicao(svg,txt,formas,anteparos,x,y,sfx_modo, caminhoBaseSaida, tipoOrd, limIns);
+                printf("DEBUG QRY: Voltou de Destruicao.\n"); fflush(stdout);
             }
         }else if (strcmp(comando, "p") == 0) {
             char* x_temp = strtok(NULL," ");
@@ -111,7 +106,7 @@ void LerComandosExecutar(Arquivo svg,Arquivo txt,Arquivo qry,Lista formas,Lista 
                 }
 
 
-                Pintura(svg,txt,formas,anteparos,x,y,cor_modo,sfx_modo, tipoOrd, limIns);
+                Pintura(svg,txt,formas,anteparos,x,y,cor_modo,sfx_modo, caminhoBaseSaida, tipoOrd, limIns);
             }
         }else if (strcmp(comando, "cln") == 0) {
             char* x_temp = strtok(NULL," ");
@@ -134,7 +129,7 @@ void LerComandosExecutar(Arquivo svg,Arquivo txt,Arquivo qry,Lista formas,Lista 
                     exit(1);
                 }
 
-                Clone(svg,txt,formas,anteparos,x,y,dx,dy,sfx_modo, tipoOrd, limIns);
+                Clone(svg,txt,formas,anteparos,x,y,dx,dy,sfx_modo, caminhoBaseSaida, tipoOrd, limIns);
             }
         }else{
             printf("Comando desconhecido: '%s' \n", comando);

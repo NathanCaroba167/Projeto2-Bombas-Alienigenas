@@ -5,6 +5,8 @@
 #ifndef QRY_H
 #define QRY_H
 
+#include "lista.h"
+
 /*
  Módulo encarregado de ler um arquivo (.qry) e executar os comandos com as operações de abrir e ler
  */
@@ -29,7 +31,8 @@ Arquivo abrirQry(Nome arquivo);
 /// @param anteparos Ponteiro para a lista de anteparos.
 /// @param tipoOrd Tipo de ordenação a ser usado (q: qsort ou m: mergesort).
 /// @param limIns Limite de elementos para começar ordenar com insertionsort.
+/// @param caminhoBaseSaida Caminho base para saida de arquivo no caso de criação de novo svg.
 /// @warning
-void LerComandosExecutar(Arquivo svg,Arquivo txt,Arquivo qry,Lista formas,Lista anteparos,char tipoOrd,int limIns);
+void LerComandosExecutar(Arquivo svg,Arquivo txt,Arquivo qry,Lista formas,Lista anteparos,char tipoOrd,int limIns, char* caminhoBaseSaida);
 
 #endif //QRY_H

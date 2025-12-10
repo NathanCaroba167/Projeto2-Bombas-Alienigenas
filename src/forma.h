@@ -104,6 +104,11 @@ void armazenaMaiorId(int maior_id);
 /// @warning
 int getMaiorId();
 
+/// @brief Adiciona uma quantidade em maior_id.
+/// @param qtd Quantidade adicionada.
+/// @warning
+void adicionaMaiorID(int qtd);
+
 /// @brief Clona uma forma com um novo ID.
 /// @param p Ponteiro para forma que será clonada.
 /// @param dx Deslocamento da coordenada x a partir da forma clonada.

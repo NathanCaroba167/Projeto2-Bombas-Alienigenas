@@ -159,9 +159,8 @@ void desenharSegmentoSVG(Arquivo svg, Segmento s) {
                  getY2Segmento(s),
                  getCorSegmento(s),
                  1.2);
-
-    }
-    fprintf(svg, "\t<line id=\"%d\" "
+    }else {
+        fprintf(svg, "\t<line id=\"%d\" "
                  "x1=\"%lf\" "
                  "y1=\"%lf\" "
                  "x2=\"%lf\" "
@@ -176,7 +175,7 @@ void desenharSegmentoSVG(Arquivo svg, Segmento s) {
                  getY2Segmento(s),
                  getCorSegmento(s),
                  1.5);
-
+    }
 }
 
 void desenharBombaSVG(Arquivo svg, double x, double y) {
@@ -188,7 +187,7 @@ void desenharBombaSVG(Arquivo svg, double x, double y) {
                  ">*</text>\n",
                  x,
                  y,
-                 18);
+                 10);
 }///
 
 void desenharPoligonoSVG(Arquivo svg, Poligono p) {
@@ -205,12 +204,23 @@ void desenharPoligonoSVG(Arquivo svg, Poligono p) {
         atual = getProximoElementoLista(atual);
     }
 
-    fprintf(svg, "\" fill=\"yellow\" opacity=\"0.5\" stroke=\"none\" />\n");
+    fprintf(svg, "\" fill=\"yellow\" opacity=\"0.5\" stroke=\"black\" />\n");
 }
 
 void desenharFormasDaLista(Arquivo svg, Lista formas, Estilo EstiloGlobalTexto) {
-    if (svg == NULL || formas == NULL || listavazia(formas)) {
-        exit(1);
+
+    if (svg == NULL || formas == NULL) {
+        printf("Erro ao CriarFormas/Anteparos no svg!\n");
+
+        perror("Motivo do erro");
+        return;
+    }
+
+    if (listavazia(formas)) {
+        printf("Erro de listavazia ao CriarFormas/Anteparos no svg!\n");
+
+        perror("Motivo do erro");
+        return;
     }
 
     pont atual = getPrimeiroElementoLista(formas);

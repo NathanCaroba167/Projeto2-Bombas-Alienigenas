@@ -1,9 +1,15 @@
 //
 // Created by natha on 01/12/2025.
 //
+//
+// Created by natha on 01/12/2025.
+//
 
 #ifndef BOMBAS_H
 #define BOMBAS_H
+
+#include "lista.h"
+#include "txt.h"
 
 /*
  Módulo encarregado de coordenar bombas com operações Anteparo(cria os anteparos) e tipos de bomba: Destruição, Pintura e Clone.
@@ -19,7 +25,7 @@
 /// @warning
 void Anteparo(Arquivo txt,Lista formas,Lista anteparos,int inicial,int final,char direcao);
 
-/// @brief
+/// @brief Bomba de destruição, destroi formas na sua região de visibilidade, incluindo anteparos.
 /// @param svg Ponteiro para o arquivo SVG (para visualização dinâmica).
 /// @param txt Ponteiro para o arquivo TXT (para reportar resultados).
 /// @param formas Ponteiro para a lista de formas.
@@ -33,7 +39,7 @@ void Anteparo(Arquivo txt,Lista formas,Lista anteparos,int inicial,int final,cha
 /// @warning
 void Destruicao(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBomba, double yBomba, char* sfx_modo, char* caminhoBaseSaida, char tipoOrd,int limIns);
 
-/// @brief
+/// @brief Bomba de Pintura, pinta formas na sua região de visibilidade, incluindo anteparos.
 /// @param svg Ponteiro para o arquivo SVG (para visualização dinâmica).
 /// @param txt Ponteiro para o arquivo TXT (para reportar resultados).
 /// @param formas Ponteiro para a lista de formas.
@@ -48,7 +54,7 @@ void Destruicao(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBo
 /// @warning
 void Pintura(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBomba, double yBomba,char* cor, char* sfx_modo, char* caminhoBaseSaida, char tipoOrd,int limIns);
 
-/// @brief
+/// @brief Bomba de clonagem, clona formas na sua região de visibilidade, incluindo anteparos.
 /// @param svg Ponteiro para o arquivo SVG (para visualização dinâmica).
 /// @param txt Ponteiro para o arquivo TXT (para reportar resultados).
 /// @param formas Ponteiro para a lista de formas.

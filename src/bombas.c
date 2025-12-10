@@ -5,27 +5,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <math.h>
 
-#include "circulo.h"
-#include "retangulo.h"
-#include "linha.h"
-#include "texto.h"
 #include "forma.h"
 #include "lista.h"
+
+#include "segmento.h"
+#include "poligono.h"
+#include "vertices.h"
 #include "svg.h"
 #include "txt.h"
 #include "segmentador.h"
-#include "vertices.h"
 #include "arvore.h"
 #include "sort.h"
-#include "poligono.h"
+#include "visibilidade.h"
 #include "bombas.h"
 
-#include "segmento.h"
-#include "visibilidade.h"
-
-#define DELTA_BORDA 5.0
+#define DELTA_BORDA 300.0
 
 void Anteparo(Arquivo txt,Lista formas,Lista anteparos,int inicial,int final,char direcao) {//
 
@@ -35,17 +32,27 @@ void Anteparo(Arquivo txt,Lista formas,Lista anteparos,int inicial,int final,cha
     }
 
     for (int i = inicial; i <= final; i++) {
+        printf("DEBUG: Buscando ID %d...\n", i); fflush(stdout);
         Pacote p = getPorIdLista(formas,i);
+        if (p == NULL) {
+            printf("DEBUG: ID %d nao achado. Pulo.\n", i); fflush(stdout);
+            continue;
+        }
+        printf("DEBUG: Convertendo ID %d...\n", i); fflush(stdout);
         Forma f = getDadosForma(p);
         TipoForma tipo = getTipoForma(p);
+
+        fprintf(txt,"\nForma original → ");
+        reportarForma(txt,p);
 
         switch (tipo) {
             case CIRCULO:
                 converteCirculoSegmento(txt,f,anteparos,direcao);
-                //fprintf
                 break;
             case RETANGULO:
+                printf("DEBUG: Entrando em converteRetangulo...\n"); fflush(stdout);
                 converteRetanguloSegmento(txt,f,anteparos);
+                printf("DEBUG: Saiu de converteRetangulo.\n"); fflush(stdout);
                 break;
             case LINHA:
                 converteLinhaSegmento(txt,f,anteparos);
@@ -57,60 +64,141 @@ void Anteparo(Arquivo txt,Lista formas,Lista anteparos,int inicial,int final,cha
                 printf("Tipo inválido!\n");
                 break;
         }
-        removerPorIdLista(formas,i);
+        printf("DEBUG: Removendo ID %d...\n", i); fflush(stdout);
+        removerElementoLista(formas,p);
+        liberarForma(p);
+        printf("DEBUG: Removido com sucesso.\n", i); fflush(stdout);
     }
 
+    printf("DEBUG: Iniciando Calculo da Borda (Universo)...\n"); fflush(stdout);
+
+    double xMaximo = -1e30;
+    double xMinimo = 1e30;
+    double yMaximo = -1e30;
+    double yMinimo = 1e30;
+    int temElementos = 0;
+
     pont atual = getPrimeiroElementoLista(anteparos);
-    Pacote p = getPacoteElementoLista(atual);
-    Segmento seg = getDadosForma(p);
-    double xMaximo = fmax(getX1Segmento(seg),getX2Segmento(seg));
-    double xMinimo = fmin(getX1Segmento(seg),getX2Segmento(seg));
-    double yMaximo = fmax(getY1Segmento(seg),getY2Segmento(seg));
-    double yMinimo = fmin(getY1Segmento(seg),getY2Segmento(seg));
-    atual = getProximoElementoLista(atual);
+
+    int contador_debug = 0;
+    while (atual != NULL) {
+        printf("DEBUG: Processando anteparo %d...\n", contador_debug++); fflush(stdout);
+        Pacote pacote = getPacoteElementoLista(atual);
+        Segmento s = getDadosForma(pacote);
+
+        if (getTipoSegmento(s) == ANTEPARO) {
+            double x1 = getX1Segmento(s);
+            double x2 = getX2Segmento(s);
+            double y1 = getY1Segmento(s);
+            double y2 = getY2Segmento(s);
+
+            if (x1 > xMaximo) xMaximo = x1; if (x1 < xMinimo) xMinimo = x1;
+            if (x2 > xMaximo) xMaximo = x2; if (x2 < xMinimo) xMinimo = x2;
+            if (y1 > yMaximo) yMaximo = y1; if (y1 < yMinimo) yMinimo = y1;
+            if (y2 > yMaximo) yMaximo = y2; if (y2 < yMinimo) yMinimo = y2;
+            temElementos = 1;
+        }
+        atual = getProximoElementoLista(atual);
+    }
+
+    atual = getPrimeiroElementoLista(formas);
 
     while (atual != NULL) {
         Pacote pacote = getPacoteElementoLista(atual);
-        Segmento s = getDadosForma(pacote);
-        atual = getProximoElementoLista(atual);
-        if (xMaximo < fmax(getX1Segmento(s),getX2Segmento(s))) {
-            xMaximo = fmax(getX1Segmento(s),getX2Segmento(s));
-        }
-        if (xMinimo > fmin(getX1Segmento(s),getX2Segmento(s))) {
-            xMinimo = fmin(getX1Segmento(s),getX2Segmento(s));
-        }
-        if (yMaximo < fmax(getY1Segmento(s),getY2Segmento(s))) {
-            yMaximo = fmax(getY1Segmento(s),getY2Segmento(s));
-        }
-        if (yMinimo > fmin(getY1Segmento(s),getY2Segmento(s))) {
-            yMinimo = fmin(getY1Segmento(s),getY2Segmento(s));
-        }
-    }
-    ///Qual id??Qual Cor??
-    inserirListaInicio(anteparos, CriarSegmento(1000, xMinimo + DELTA_BORDA, yMinimo + DELTA_BORDA, xMaximo + DELTA_BORDA, yMinimo + DELTA_BORDA, "black",AREA));
-    inserirListaInicio(anteparos, CriarSegmento(1001, xMaximo + DELTA_BORDA, yMinimo + DELTA_BORDA, xMaximo + DELTA_BORDA, yMaximo + DELTA_BORDA, "black",AREA));
-    inserirListaInicio(anteparos, CriarSegmento(1002, xMaximo + DELTA_BORDA, yMaximo + DELTA_BORDA, xMinimo + DELTA_BORDA, yMaximo + DELTA_BORDA, "black",AREA));
-    inserirListaInicio(anteparos, CriarSegmento(1003, xMinimo + DELTA_BORDA, yMaximo + DELTA_BORDA, xMinimo + DELTA_BORDA, yMinimo + DELTA_BORDA, "black",AREA));
+        TipoForma tipo = getTipoForma(pacote);
+        Forma f = getDadosForma(pacote);
 
-    fprintf(txt,"\nForma criada → ");
-    reportarForma(txt,p);
+        double minX_f, maxX_f, minY_f, maxY_f;
+
+        switch (tipo) {
+            case CIRCULO: {
+                double r = getRCirculo(f);
+                minX_f = getXCirculo(f) - r; maxX_f = getXCirculo(f) + r;
+                minY_f = getYCirculo(f) - r; maxY_f = getYCirculo(f) + r;
+                break;
+            }
+            case RETANGULO: {
+                double w = getWRetangulo(f); double h = getHRetangulo(f);
+                minX_f = getXRetangulo(f); maxX_f = getXRetangulo(f) + w;
+                minY_f = getYRetangulo(f); maxY_f = getYRetangulo(f) + h;
+                break;
+            }
+            case LINHA: {
+                minX_f = fmin(getX1Linha(f), getX2Linha(f));
+                maxX_f = fmax(getX1Linha(f), getX2Linha(f));
+                minY_f = fmin(getY1Linha(f), getY2Linha(f));
+                maxY_f = fmax(getY1Linha(f), getY2Linha(f));
+                break;
+            }
+            case TEXTO: {
+                double x = getXTexto(f); double y = getYTexto(f);
+                double largura = 10.0 * quantidadeCaracteresTexto(f);
+                minX_f = x; maxX_f = x + largura;
+                minY_f = y; maxY_f = y + 10.0;
+                break;
+            }
+            default:
+                atual = getProximoElementoLista(atual);
+                continue;
+        }
+
+
+        if (maxX_f > xMaximo) xMaximo = maxX_f;
+        if (minX_f > xMinimo) xMinimo = minX_f;
+        if (maxY_f > yMaximo) yMaximo = maxY_f;
+        if (minY_f > yMinimo) yMinimo = minY_f;
+
+        temElementos = 1;
+        atual = getProximoElementoLista(atual);
+    }
+
+    printf("DEBUG: Calculo Borda finalizado. Criando 4 segmentos...\n"); fflush(stdout);
+
+    if (temElementos) {
+        int idMax = getMaiorId();
+
+        Pacote p = CriarPacote(CriarSegmento(idMax, xMinimo - DELTA_BORDA, yMinimo - DELTA_BORDA, xMaximo + DELTA_BORDA, yMinimo - DELTA_BORDA, "black",AREA),SEGMENTO);
+        inserirListaInicio(anteparos, p);
+
+        Pacote p1 = CriarPacote(CriarSegmento(idMax + 1, xMaximo + DELTA_BORDA, yMinimo - DELTA_BORDA, xMaximo + DELTA_BORDA, yMaximo + DELTA_BORDA, "black",AREA),SEGMENTO);
+        inserirListaInicio(anteparos, p1);
+
+        Pacote p2 = CriarPacote(CriarSegmento(idMax + 2, xMaximo + DELTA_BORDA, yMaximo + DELTA_BORDA, xMinimo - DELTA_BORDA, yMaximo + DELTA_BORDA, "black",AREA),SEGMENTO);
+        inserirListaInicio(anteparos, p2);
+
+        Pacote p3 = CriarPacote(CriarSegmento(idMax + 3, xMinimo - DELTA_BORDA, yMaximo + DELTA_BORDA, xMinimo - DELTA_BORDA, yMinimo - DELTA_BORDA, "black",AREA),SEGMENTO);
+        inserirListaInicio(anteparos, p3);
+
+        adicionaMaiorID(4);
+    }
+    printf("DEBUG: Bordas criadas. Fim do Anteparo.\n"); fflush(stdout);
+
 }
 
 void Destruicao(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBomba, double yBomba, char* sfx_modo, char* caminhoBaseSaida, char tipoOrd,int limIns) {
     Poligono poli = calcularRegiaoVisibilidade(anteparos,xBomba,yBomba, tipoOrd,limIns);
 
+    printf("DEBUG BOMBA: Iniciando desenho no SVG (Modo: %s)...\n", sfx_modo); fflush(stdout);
     if (strcmp(sfx_modo, "-") == 0) {
+        printf("DEBUG SVG: Chamando desenharPoligonoSVG no principal...\n"); fflush(stdout);
         desenharPoligonoSVG(svg,poli);
+        desenharBombaSVG(svg,xBomba,yBomba);
+        printf("DEBUG SVG: Retornou de desenharPoligonoSVG.\n"); fflush(stdout);
     } else {
         char nomeArquivoSfx[512];
         sprintf(nomeArquivoSfx,"%s-%s.svg",caminhoBaseSaida, sfx_modo);
+
         Arquivo svgSFX = abrirSVG(nomeArquivoSfx);
         inicializarSVG(svgSFX);
+
+        //desenharFormasDaLista(svgSFX, formas, NULL);
         desenharFormasDaLista(svgSFX, anteparos, NULL);
         desenharPoligonoSVG(svgSFX,poli);
+        desenharBombaSVG(svgSFX,xBomba,yBomba);
         fecharSVG(svgSFX);
         fclose(svgSFX);
     }
+    printf("DEBUG BOMBA: Desenho SVG concluido.\n"); fflush(stdout);
 
     pont atual = getPrimeiroElementoLista(formas);
     while (atual != NULL) {
@@ -118,9 +206,11 @@ void Destruicao(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBo
 
         pont proximo = getProximoElementoLista(atual);
         if (verificarSobreposicao(poli,pacote)) {
-            ///fprintf
+            fprintf(txt,"\nForma destruida → ");
+            reportarForma(txt,pacote);
 
             removerElementoLista(formas,pacote);
+            liberarForma(pacote);
         }
 
         atual = proximo;
@@ -136,7 +226,10 @@ void Destruicao(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBo
             if (getTipoSegmento(seg) == AREA) {
 
             } else {
+                fprintf(txt,"\nAnteparo destruido → ");
+                reportarForma(txt,pacote);
                 removerElementoLista(anteparos,pacote);
+                liberarForma(pacote);
             }
         }
         atual = proximo;
@@ -167,7 +260,9 @@ void Pintura(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBomba
         if (verificarSobreposicao(poli,pacote)) {
 
             setCorBForma(pacote,cor);
-            ///fprintf
+            setCorPForma(pacote,cor);
+            fprintf(txt,"\nForma pintada → ");
+            reportarForma(txt,pacote);
         }
 
         atual = getProximoElementoLista(atual);
@@ -183,6 +278,7 @@ void Pintura(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBomba
 
             } else {
                 setCorBForma(pacote,cor);
+                setCorPForma(pacote,cor);
             }
         }
         atual = getProximoElementoLista(atual);
@@ -216,7 +312,8 @@ void Clone(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBomba, 
 
             Pacote clone = clonarForma(pacote, dx, dy);
             inserirListaFim(novosClones,clone);
-            ///fprintf
+            fprintf(txt,"\nForma clonada → ");
+            reportarForma(txt,pacote);
 
         }
 

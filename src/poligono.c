@@ -148,6 +148,7 @@ bool verificarSobreposicao(Poligono p, Pacote forma) {
             double x = getXCirculo(form);
             double y = getYCirculo(form);
 
+            // Se quiser ser rigoroso, poderia testar x+r, x-r, y+r, y-r
             return pontoDentroPoligono(p, x, y);
         }
         case LINHA: {
@@ -155,7 +156,7 @@ bool verificarSobreposicao(Poligono p, Pacote forma) {
             double y1 = getY1Linha(form);
             double x2 = getX2Linha(form);
             double y2 = getY2Linha(form);
-            return pontoDentroPoligono(poli, x1, y1) || pontoDentroPoligono(p, x2, y2);
+            return pontoDentroPoligono(poli, x1, y1) || pontoDentroPoligono(poli, x2, y2);
         }
         case SEGMENTO: {
             double x1 = getX1Segmento(form);
@@ -163,7 +164,14 @@ bool verificarSobreposicao(Poligono p, Pacote forma) {
             double x2 = getX2Segmento(form);
             double y2 = getY2Segmento(form);
 
-            return pontoDentroPoligono(poli, x1, y1) || pontoDentroPoligono(p, x2, y2);
+            if (pontoDentroPoligono(poli, x1, y1)) return true;
+            if (pontoDentroPoligono(poli, x2, y2)) return true;
+
+            double xm = (x1 + x2) / 2.0;
+            double ym = (y1 + y2) / 2.0;
+            if (pontoDentroPoligono(poli,xm,ym)) return true;
+
+            return false;
         }
         case TEXTO: {
              double x = getXTexto(form);

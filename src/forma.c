@@ -274,6 +274,10 @@ int getMaiorId() {
     return MAIOR_ID;
 }
 
+void adicionaMaiorID(int qtd) {
+    MAIOR_ID += qtd;
+}
+
 Pacote clonarForma(Pacote p,double dx,double dy) {
     TipoForma tipo = getTipoForma(p);
 

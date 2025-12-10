@@ -16,8 +16,6 @@
 #include "txt.h"
 #include "segmentador.h"
 
-static int MAIOR_ID = 0;
-
 void converteCirculoSegmento(Arquivo txt,Circulo c,Lista anteparo,char direcao) {
     int novo_id = getMaiorId();
 
@@ -35,14 +33,13 @@ void converteCirculoSegmento(Arquivo txt,Circulo c,Lista anteparo,char direcao) 
         fprintf(txt,"\nSegmento criado → ");
         reportarForma(txt,p);
         inserirListaInicio(anteparo,p);
-        MAIOR_ID++;
     }else if (direcao == 'v') {
         Pacote p = CriarPacote(CriarSegmento(novo_id, x, yBase, x, yBase + tamanho, corB,ANTEPARO),SEGMENTO);
         fprintf(txt,"\nSegmento criado → ");
         reportarForma(txt,p);
         inserirListaInicio(anteparo, p);
-        MAIOR_ID++;
     }
+    adicionaMaiorID(1);
 }
 
 void converteRetanguloSegmento(Arquivo txt,Retangulo r,Lista anteparo) {
@@ -84,7 +81,7 @@ void converteRetanguloSegmento(Arquivo txt,Retangulo r,Lista anteparo) {
     inserirListaInicio(anteparo, p3);
     fprintf(txt,"\n");
 
-    MAIOR_ID = MAIOR_ID + 4;
+    adicionaMaiorID(4);
 }
 
 void converteLinhaSegmento(Arquivo txt,Linha l,Lista anteparo) {
@@ -100,7 +97,8 @@ void converteLinhaSegmento(Arquivo txt,Linha l,Lista anteparo) {
     fprintf(txt,"\nSegmento criado → ");
     reportarForma(txt,p);
     inserirListaInicio(anteparo, p);
-    MAIOR_ID++;
+
+    adicionaMaiorID(1);
 }
 
 void converteTextoSegmento(Arquivo txt,Texto t,Lista anteparo) {
@@ -130,4 +128,6 @@ void converteTextoSegmento(Arquivo txt,Texto t,Lista anteparo) {
     fprintf(txt,"\nSegmento criado → ");
     reportarForma(txt,p);
     inserirListaInicio(anteparo, p);
+
+    adicionaMaiorID(1);
 }

@@ -109,6 +109,8 @@ int main(int argc, char* argv[]) {
             strcpy(caminhoCompletoQry, nomeArqQry);
         }
 
+        printf("DEBUG: Tentando abrir o arquivo QRY no caminho: [%s]\n", caminhoCompletoQry);
+
 
         char* nomeBaseQry = getNomeBase(nomeArqQry);
         if (nomeBaseQry ==  NULL) {
@@ -159,6 +161,7 @@ int main(int argc, char* argv[]) {
 
     gerarSVG(formas,arqSvg,EstiloGlobalTexto);
     fecharSVG(arqSvg);
+    fclose(arqSvg);
 
     anteparos = iniciarLista();
     // Execução do fluxo .qry (se especificado)
@@ -177,17 +180,27 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         LerComandosExecutar(arqSvgFinal, arqTxt, arqQry, formas, anteparos, tipoOrd, limIns, caminhoBaseSaida);
+        printf("DEBUG QRY: Voltou da leitura QRY.\n"); fflush(stdout);
         fclose(arqQry);
+        printf("DEBUG MAIN: Fechou de Qry.\n"); fflush(stdout);
+
         fclose(arqTxt);
+        printf("DEBUG MAIN: Fechou de Txt.\n"); fflush(stdout);
 
         // Geração do SVG Final
         gerarSVG(formas,arqSvgFinal,EstiloGlobalTexto);
-        gerarSVG(anteparos,arqSvgFinal,EstiloGlobalTexto);
-        fecharSVG(arqSvgFinal);
-        fclose(arqSvgFinal);
-    }
+        printf("DEBUG SVG: Gerou svg final formas.\n"); fflush(stdout);
 
-    fclose(arqSvg);
+        gerarSVG(anteparos,arqSvgFinal,EstiloGlobalTexto);
+        printf("DEBUG SVG: Gerou svg final anteparos.\n"); fflush(stdout);
+
+        fecharSVG(arqSvgFinal);
+        printf("DEBUG MAIN: Fechou de SVGFinal.\n"); fflush(stdout);
+
+        fclose(arqSvgFinal);
+        printf("DEBUG MAIN: Fclose de SVGFinal.\n"); fflush(stdout);
+
+    }
 
     // Limpeza da memória
     printf("Limpando a memória ...\n");

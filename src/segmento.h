@@ -105,6 +105,8 @@ TipoSegmento getTipoSegmento(Segmento s);
 /// @warning
 double calcTamanhoSegmento(Segmento s);
 
+double orientacaoTresPontos(double x1, double y1, double x2, double y2, double px, double py);
+
 /// @brief Indica a orientação de um ponto em relação ao Segmento.
 /// @param s Ponteiro para o segmento analisado.
 /// @param px Coordenada x do ponto analisado.

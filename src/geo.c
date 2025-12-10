@@ -144,12 +144,27 @@ void criarFormasNaLista(Arquivo geo, Lista forma,Estilo* EstiloPonteiro) {
             char* fSize = strtok(NULL," ");
 
             if (fFamily && fWeight && fSize) {
+                char* pesoCompleto = fWeight;
+
+                if (strcmp(fWeight, "n") == 0) {
+                    pesoCompleto = "normal";
+                }
+                else if (strcmp(fWeight, "b") == 0) {
+                    pesoCompleto = "bold";
+                }
+                else if (strcmp(fWeight, "b+") == 0) {
+                    pesoCompleto = "bolder";
+                }
+                else if (strcmp(fWeight, "l") == 0) {
+                    pesoCompleto = "lighter";
+                }
+
                 // Se o EstiloPonteiro já contém um estilo alocado, ele deve ser liberado
                 if (*EstiloPonteiro != NULL) {
                     eliminarEstilo(*EstiloPonteiro);
                 }
 
-                *EstiloPonteiro = CriarEstilo(fFamily,fWeight,fSize);
+                *EstiloPonteiro = CriarEstilo(fFamily,pesoCompleto,fSize);
             }
         }else {
             printf("Comando desconhecido: '%s'\n", comando);
