@@ -188,7 +188,7 @@ void desenharBombaSVG(Arquivo svg, double x, double y) {
                  x,
                  y,
                  10);
-}///
+}
 
 void desenharPoligonoSVG(Arquivo svg, Poligono p) {
     if (svg == NULL || p == NULL) return;

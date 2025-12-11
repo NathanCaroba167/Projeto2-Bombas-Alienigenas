@@ -65,6 +65,13 @@ Lista getListaPontosPoligono(Poligono p);
 /// @warning
 void eliminarPoligono(Poligono p);
 
+/// @brief Verifica se um ponto está dentro do poligono.
+/// @param p Ponteiro para o poligono analisado.
+/// @param px Coordenada x do ponto que será analisado.
+/// @param py Coordenada y do ponto que será analisado.
+/// @return
+bool pontoDentroPoligono(Poligono p, double px, double py);
+
 /// @brief Verifica se a forma e o poligono estão sobrepostos.
 /// @param p Ponteiro para o poligono analisado.
 /// @param forma Ponteiro para a forma analisada.

@@ -23,4 +23,10 @@
 /// @warning
 Poligono calcularRegiaoVisibilidade(Lista anteparos, double bx, double by, char tipoOrd, int limIns);
 
+int comparaSegmentosArvore(Segmento a, Segmento b);
+
+void tratarSegmentosQueCruzamInicio(Lista anteparos, double bx, double by);
+
+int calcularInterseccaoRaio(Segmento s, double theta, double* xSaida, double* ySaida);
+
 #endif //VISIBILIDADE_H
