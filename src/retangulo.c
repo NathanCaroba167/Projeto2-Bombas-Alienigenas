@@ -140,10 +140,6 @@ void setCorPRetangulo(Retangulo r,char* corP) {
     strcpy(retan->corP,corP);
 }
 
-double calcAreaRetangulo(Retangulo r) {
-    return getWRetangulo(r) * getHRetangulo(r);
-}
-
 void eliminarRetangulo(Retangulo r) {
     retangulo* retan = (retangulo*)r;
     // Libera as strings de cor

@@ -24,7 +24,7 @@
 
 #define DELTA_BORDA 300.0
 
-void Anteparo(Arquivo txt,Lista formas,Lista anteparos,int inicial,int final,char direcao) {//
+void Anteparo(Arquivo txt,Lista formas,Lista anteparos,int inicial,int final,char direcao) {
 
     if (formas == NULL) {
         printf( "ERRO no comando A: Lista de formas vazia sem formas para transformacao.\n");
@@ -144,9 +144,9 @@ void Anteparo(Arquivo txt,Lista formas,Lista anteparos,int inicial,int final,cha
 
 
         if (maxX_f > xMaximo) xMaximo = maxX_f;
-        if (minX_f > xMinimo) xMinimo = minX_f;
+        if (minX_f < xMinimo) xMinimo = minX_f;
         if (maxY_f > yMaximo) yMaximo = maxY_f;
-        if (minY_f > yMinimo) yMinimo = minY_f;
+        if (minY_f < yMinimo) yMinimo = minY_f;
 
         temElementos = 1;
         atual = getProximoElementoLista(atual);
@@ -302,7 +302,8 @@ void Clone(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBomba, 
         fclose(svgSFX);
     }
 
-    Lista novosClones = iniciarLista();
+    Lista clonesDeFormas = iniciarLista();
+    Lista clonesDeAnteparos = iniciarLista();
 
     pont atual = getPrimeiroElementoLista(formas);
     while (atual != NULL) {
@@ -311,10 +312,9 @@ void Clone(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBomba, 
         if (verificarSobreposicao(poli,pacote)) {
 
             Pacote clone = clonarForma(pacote, dx, dy);
-            inserirListaFim(novosClones,clone);
+            inserirListaFim(clonesDeFormas,clone);
             fprintf(txt,"\nForma clonada → ");
             reportarForma(txt,pacote);
-
         }
 
         atual = getProximoElementoLista(atual);
@@ -326,16 +326,19 @@ void Clone(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBomba, 
 
         if (verificarSobreposicao(poli,pacote)) {
             Segmento seg = getDadosForma(pacote);
-            if (getTipoSegmento(seg) == AREA) {
 
-            } else {
+            if (getTipoSegmento(seg) != AREA) {
                 Pacote clone = clonarForma(pacote, dx, dy);
-                inserirListaFim(novosClones,clone);
+                inserirListaFim(clonesDeAnteparos,clone);
+                fprintf(txt, "\nAnteparo clonado → ");
+                reportarForma(txt, pacote);
             }
         }
         atual = getProximoElementoLista(atual);
     }
-    concatenaListas(formas, novosClones); //anteparo??
-    free(novosClones);
+    concatenaListas(formas, clonesDeFormas);
+    concatenaListas(anteparos, clonesDeAnteparos);
+    free(clonesDeFormas);
+    free(clonesDeAnteparos);
     eliminarPoligono(poli);
 }

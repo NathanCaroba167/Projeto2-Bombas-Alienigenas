@@ -78,7 +78,7 @@ pontArvore pontMaisEsquerda(pontArvore no) {
 }
 
 pontArvore removerRec(pontArvore raiz, Segmento s, Comparador comp, Segmento* itemRetorno) {
-    if(raiz == NULL) return NULL;//
+    if(raiz == NULL) return NULL;
 
     int r = comp(s, raiz->segmento);
 

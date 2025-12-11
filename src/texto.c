@@ -239,11 +239,6 @@ size_t quantidadeCaracteresTexto(Texto t) {
     return strlen(((texto*)t)->txto);
 }
 
-double calcAreaTexto(Texto t) {
-    // A área é calculada como 20 * número de caracteres
-    return 20 * (double) strlen(getTxtoTexto(t));
-}
-
 void eliminarEstilo(Estilo e) {
     estilo* est = (estilo*)e;
     free(est->fFamily);

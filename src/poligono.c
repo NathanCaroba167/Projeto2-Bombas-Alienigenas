@@ -147,9 +147,15 @@ bool verificarSobreposicao(Poligono p, Pacote forma) {
         case CIRCULO: {
             double x = getXCirculo(form);
             double y = getYCirculo(form);
+            double r = getRCirculo(form);
 
-            // Se quiser ser rigoroso, poderia testar x+r, x-r, y+r, y-r
-            return pontoDentroPoligono(p, x, y);
+            if (pontoDentroPoligono(poli, x, y)) return true;
+            if (pontoDentroPoligono(poli, x - r,y))return true;
+            if (pontoDentroPoligono(poli, x, y + r)) return true;
+            if (pontoDentroPoligono(poli, x + r, y)) return true;
+            if (pontoDentroPoligono(poli, x, y - r)) return true;
+
+            return false;
         }
         case LINHA: {
             double x1 = getX1Linha(form);
@@ -174,9 +180,46 @@ bool verificarSobreposicao(Poligono p, Pacote forma) {
             return false;
         }
         case TEXTO: {
-             double x = getXTexto(form);
-             double y = getYTexto(form);
-             return pontoDentroPoligono(poli, x, y);
+            double x = getXTexto(form);
+            double y = getYTexto(form);
+            char ancora = getATexto(form);
+
+            double largura = 10.0 * quantidadeCaracteresTexto(form);
+            double altura = 10.0;
+
+            double xMin, xMax;
+
+            switch (ancora) {
+                case 'i':
+                    xMin = x;
+                    xMax = x + largura;
+                    break;
+                case 'm':
+                    xMin = x - (largura / 2.0);
+                    xMax = x + (largura / 2.0);
+                    break;
+                case 'f':
+                    xMin = x - largura;
+                    xMax = x;
+                    break;
+                default:
+                    xMin = x;
+                    xMax = x + largura;
+            }
+
+            double yBase = y;
+            double yTopo = y - altura;
+
+            if (pontoDentroPoligono(poli, xMin, yBase)) return true;
+            if (pontoDentroPoligono(poli, xMax, yBase)) return true;
+            if (pontoDentroPoligono(poli, xMin, yTopo)) return true;
+            if (pontoDentroPoligono(poli, xMax, yTopo)) return true;
+
+            double xCentro = (xMin + xMax) / 2.0;
+            double yCentro = (yBase + yTopo) / 2.0;
+            if (pontoDentroPoligono(poli,xCentro, yCentro)) return true;
+
+            return false;
         }
         case VERTICE: {
             double x = getXVertice(form);

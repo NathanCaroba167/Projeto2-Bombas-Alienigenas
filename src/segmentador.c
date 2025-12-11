@@ -112,8 +112,9 @@ void converteTextoSegmento(Arquivo txt,Texto t,Lista anteparo) {
             x2 = getXTexto(t) + 10.0 * quantidadeCaracteresTexto(t);
             break;
         case 'm':
-            x1 = (getXTexto(t) - 10.0 * quantidadeCaracteresTexto(t))/2;
-            x2 = (getXTexto(t) + 10.0 * quantidadeCaracteresTexto(t))/2;
+            double largura = 10.0 * quantidadeCaracteresTexto(t);
+            x1 = getXTexto(t) - (largura/2.0);
+            x2 = getXTexto(t) + (largura/2.0);
             break;
         case 'f':
             x1 = getXTexto(t) - 10.0 * quantidadeCaracteresTexto(t);

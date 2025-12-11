@@ -135,11 +135,6 @@ char* CorComplementarLinha(Linha l) {
     return corComplementar;
 }
 
-double calcAreaLinha(Linha l) {
-    // 2 * comprimento da linha
-    return 2 * sqrt(pow(getX1Linha(l)-getX2Linha(l),2) + pow(getY1Linha(l)-getY2Linha(l),2));
-}
-
 void eliminarLinha(Linha l) {
     linha* lin = (linha*)l;
     // Libera a string da cor

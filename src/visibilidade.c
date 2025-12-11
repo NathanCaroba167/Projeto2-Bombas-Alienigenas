@@ -75,8 +75,8 @@ int comparaVerticesSort(const void* a, const void* b) {
     TipoVertice t1 = getTipoVertice(v1);
     TipoVertice t2 = getTipoVertice(v2);
 
-    if (t1 == FIM && t2 == INICIO) return -1;
-    if (t1 == INICIO && t2 == FIM) return 1;
+    if (t1 == INICIO && t2 == FIM) return -1;
+    if (t1 == FIM && t2 == INICIO) return 1;
 
     double d1 = getDistanciaVertice(v1);
     double d2 = getDistanciaVertice(v2);

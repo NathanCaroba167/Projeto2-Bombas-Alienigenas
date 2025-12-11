@@ -102,12 +102,6 @@ void setCorLinha(Linha l, char* cor);
 /// @return String com a cor complementar (alocada dinamicamente) no formato RGB (Ex: #RRGGBB).
 char* CorComplementarLinha(Linha l);
 
-/// @brief Calcula a área da linha (2 * comprimento da linha).
-/// @param l Ponteiro para a linha analisada.
-/// @return Um double que representa a área da linha.
-/// @warning
-double calcAreaLinha(Linha l);
-
 /// @brief Libera a memória alocada para a linha, incluindo a string de cor.
 /// @param l Ponteiro para a linha que será eliminada.
 /// @warning

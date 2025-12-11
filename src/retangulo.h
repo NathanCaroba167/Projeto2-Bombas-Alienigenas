@@ -110,12 +110,6 @@ char* getCorPRetangulo(Retangulo r);
 /// @warning
 void setCorPRetangulo(Retangulo r,char* corP);
 
-/// @brief Calcula a área do retângulo (w * h).
-/// @param r Ponteiro para o retângulo analisado.
-/// @return Um double que representa a área do retângulo.
-/// @warning
-double calcAreaRetangulo(Retangulo r);
-
 /// @brief Libera a memória alocada para o retângulo, incluindo as strings de cor.
 /// @param r Ponteiro para o retângulo que será eliminado.
 /// @warning

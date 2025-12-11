@@ -127,11 +127,6 @@ void setCorPCirculo(Circulo c, char* corP) {
   strcpy(circ->corP,corP);
 }
 
-double calcAreaCirculo(Circulo c) {
-  // Usa a constante PI definida acima
-  return PI*pow(getRCirculo(c) ,2);
-}
-
 void eliminarCirculo(Circulo c) {
   circulo* circ = (circulo*)c;
   // Libera as strings alocadas dinamicamente

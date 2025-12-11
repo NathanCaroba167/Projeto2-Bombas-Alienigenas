@@ -50,24 +50,6 @@ TipoForma getTipoForma(Pacote p) {
 
 }
 
-double getAreaForma(Pacote p) { //*
-    TipoForma tipo = getTipoForma(p);
-    Forma g = getDadosForma(p);
-    switch (tipo) {
-        case CIRCULO:
-            return calcAreaCirculo(g);
-        case RETANGULO:
-            return calcAreaRetangulo(g);
-        case LINHA:
-            return calcAreaLinha(g);
-        case TEXTO:
-            return calcAreaTexto(g);
-        default:
-            printf("ERRO: tipo inválido!\n");
-            return 0.0;
-    }
-}
-
 int getIDForma(Pacote p) {
     if (p == NULL) {
         return 0;

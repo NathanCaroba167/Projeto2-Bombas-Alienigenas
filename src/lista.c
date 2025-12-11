@@ -165,11 +165,6 @@ pont getUltimoElementoLista(Lista l) {
     return LISTA->fim;
 }
 
-Pacote getPrimeiraFormaLista(Lista l) {///
-    lista* LISTA = (lista*)l;
-    return LISTA->inicio->form;
-}
-
 Pacote getPacoteElementoLista(pont p) {
     return p->form;
 }

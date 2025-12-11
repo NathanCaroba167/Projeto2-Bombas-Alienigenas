@@ -96,12 +96,6 @@ char* getCorPCirculo(Circulo c);
 /// @warning
 void setCorPCirculo(Circulo c, char* corP);
 
-/// @brief Calcula a área do círculo.
-/// @param c Ponteiro para o círculo analisado.
-/// @return Um double que representa a área do círculo.
-/// @warning
-double calcAreaCirculo(Circulo c);
-
 /// @brief Libera a memória alocada para o círculo, incluindo as strings de cor.
 /// @param c Ponteiro para o círculo que será eliminado.
 /// @warning

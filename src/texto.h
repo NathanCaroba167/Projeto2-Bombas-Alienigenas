@@ -160,12 +160,6 @@ void setFontSizeTexto(Estilo e, char* size);
 /// @warning
 size_t quantidadeCaracteresTexto(Texto t);
 
-/// @brief Calcula a área do texto (20 * número de caracteres).
-/// @param t Ponteiro para o texto analisado.
-/// @return Um double que representa a área do texto.
-/// @warning
-double calcAreaTexto(Texto t);
-
 /// @brief Libera a memória alocada para o estilo.
 /// @param e Ponteiro para o o estilo analisado.
 /// @warning
