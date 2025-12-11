@@ -67,7 +67,7 @@ void Anteparo(Arquivo txt,Lista formas,Lista anteparos,int inicial,int final,cha
         printf("DEBUG: Removendo ID %d...\n", i); fflush(stdout);
         removerElementoLista(formas,p);
         liberarForma(p);
-        printf("DEBUG: Removido com sucesso.\n", i); fflush(stdout);
+        printf("DEBUG: Removido ID %d com sucesso.\n", i); fflush(stdout);
     }
 
     printf("DEBUG: Iniciando Calculo da Borda (Universo)...\n"); fflush(stdout);
@@ -92,10 +92,18 @@ void Anteparo(Arquivo txt,Lista formas,Lista anteparos,int inicial,int final,cha
             double y1 = getY1Segmento(s);
             double y2 = getY2Segmento(s);
 
-            if (x1 > xMaximo) xMaximo = x1; if (x1 < xMinimo) xMinimo = x1;
-            if (x2 > xMaximo) xMaximo = x2; if (x2 < xMinimo) xMinimo = x2;
-            if (y1 > yMaximo) yMaximo = y1; if (y1 < yMinimo) yMinimo = y1;
-            if (y2 > yMaximo) yMaximo = y2; if (y2 < yMinimo) yMinimo = y2;
+            if (x1 > xMaximo) xMaximo = x1;
+            if (x1 < xMinimo) xMinimo = x1;
+
+            if (x2 > xMaximo) xMaximo = x2;
+            if (x2 < xMinimo) xMinimo = x2;
+
+            if (y1 > yMaximo) yMaximo = y1;
+            if (y1 < yMinimo) yMinimo = y1;
+
+            if (y2 > yMaximo) yMaximo = y2;
+            if (y2 < yMinimo) yMinimo = y2;
+
             temElementos = 1;
         }
         atual = getProximoElementoLista(atual);
@@ -191,10 +199,10 @@ void Destruicao(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBo
         Arquivo svgSFX = abrirSVG(nomeArquivoSfx);
         inicializarSVG(svgSFX);
 
-        //desenharFormasDaLista(svgSFX, formas, NULL);
-        desenharFormasDaLista(svgSFX, anteparos, NULL);
         desenharPoligonoSVG(svgSFX,poli);
         desenharBombaSVG(svgSFX,xBomba,yBomba);
+        //desenharFormasDaLista(svgSFX, formas, NULL);
+        desenharFormasDaLista(svgSFX, anteparos, NULL);
         fecharSVG(svgSFX);
         fclose(svgSFX);
     }
@@ -228,6 +236,7 @@ void Destruicao(Arquivo svg,Arquivo txt,Lista formas,Lista anteparos, double xBo
             } else {
                 fprintf(txt,"\nAnteparo destruido → ");
                 reportarForma(txt,pacote);
+                fprintf(txt,"\n");
                 removerElementoLista(anteparos,pacote);
                 liberarForma(pacote);
             }

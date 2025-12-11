@@ -80,6 +80,24 @@ void eliminarPoligono(Poligono p) {
     free(poli);
 }
 
+bool pontoEhVerticeDoPoligono(Poligono p, double x, double y) {
+    poligono* poli = (poligono*)p;
+    pont atual = getPrimeiroElementoLista(poli->pontos);
+
+    double epsilon = 1e-4;
+
+    while (atual != NULL) {
+        Pacote pack = getPacoteElementoLista(atual);
+        Ponto pt = getDadosForma(pack);
+
+        if (hypot(getXPonto(pt) - x, getYPonto(pt) - y) < epsilon) {
+            return true;
+        }
+        atual = getProximoElementoLista(atual);
+    }
+    return false;
+}
+
 bool pontoDentroPoligono(Poligono p, double px, double py) {
     poligono* poli = (poligono*)p;
 
@@ -176,6 +194,9 @@ bool verificarSobreposicao(Poligono p, Pacote forma) {
             double xm = (x1 + x2) / 2.0;
             double ym = (y1 + y2) / 2.0;
             if (pontoDentroPoligono(poli,xm,ym)) return true;
+
+            if (pontoEhVerticeDoPoligono(poli, x1, y1)) return true;
+            if (pontoEhVerticeDoPoligono(poli, x2, y2)) return true;
 
             return false;
         }
