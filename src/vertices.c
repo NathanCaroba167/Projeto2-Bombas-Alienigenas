@@ -102,6 +102,14 @@ Vetor CriarVetorVertices(Lista anteparo, double xBomba, double yBomba, int* qtdV
         if (ang1 < 0) ang1 += 2 * M_PI;
         if (ang2 < 0) ang2 += 2 * M_PI;
 
+        if (fabs(ang1 - ang2) > M_PI) {
+            if (ang1 < ang2) {
+                ang1 += 2 * M_PI;
+            } else {
+                ang2 += 2 * M_PI;
+            }
+        }
+
         double dist1 = hypot(x1 - xBomba, y1 - yBomba);
         double dist2 = hypot(x2 - xBomba, y2 - yBomba);
 

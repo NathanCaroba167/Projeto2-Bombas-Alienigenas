@@ -95,15 +95,16 @@ int comparaSegmentosArvore(Segmento a, Segmento b) {
     double x2b = getX2Segmento(b), y2b = getY2Segmento(b);
 
 
-    if (fabs(x1a - x1b) < 1e-9 && fabs(y1a - y1b) < 1e-9) {
+    if (fabs(x1a - x1b) < 1e-5 && fabs(y1a - y1b) < 1e-5) {
 
         double val = orientacaoTresPontos(x1b, y1b, x2b, y2b, x2a, y2a);
 
         double val_bomba = orientacaoTresPontos(x1b, y1b, x2b, y2b, BOMBA_X, BOMBA_Y);
 
-        if (val * val_bomba > 0) {
-            return -1;
-        }
+        if (val * val_bomba > 1e-9) return -1;
+        if (val * val_bomba < -1e-9) return 1;
+
+        if (hypot(x2a - x1a, y2a - y1a) < hypot(x2b - x1b, y2b - y1b)) return -1;
         return 1;
     }
 
@@ -113,7 +114,7 @@ int comparaSegmentosArvore(Segmento a, Segmento b) {
     if (val_a_em_b * val_bomba_em_b > 1e-9) return -1;
     if (val_a_em_b * val_bomba_em_b < -1e-9) return 1;
 
-    if (a < b) return -1;
+    if (getIDSegmento(a) < getIDSegmento(b)) return -1;
     return 1;
 }
 
@@ -134,6 +135,7 @@ void tratarSegmentosQueCruzamInicio(Lista anteparos, double bx, double by) {
             double tx, ty;
             if (calcularInterseccaoRaio(seg, 0.0, &tx, &ty)) {
                 if (tx > bx) {
+                    ty = by;
                     char* cor = getCorSegmento(seg);
                     TipoSegmento tipoOriginal = getTipoSegmento(seg);
                     double sx1 = getX1Segmento(seg);

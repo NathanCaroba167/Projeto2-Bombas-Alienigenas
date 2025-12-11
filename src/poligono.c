@@ -80,6 +80,75 @@ void eliminarPoligono(Poligono p) {
     free(poli);
 }
 
+double produtoVetorial(double x1, double y1, double x2, double y2, double x3, double y3) {
+    return (x2 -x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
+}
+
+bool naSegmento(double px, double py, double qx, double qy, double rx, double ry) {
+    return qx <= fmax(px, rx) && qx >= fmin(px, rx) &&
+           qy <= fmax(py, ry) && qy >= fmin(py, ry);
+}
+
+bool segmentosSeInterceptam(double p1x, double p1y, double p2x, double p2y,double p3x, double p3y, double p4x, double p4y) {
+
+    double o1 = produtoVetorial(p1x, p1y, p2x, p2y, p3x, p3y);
+    double o2 = produtoVetorial(p1x, p1y, p2x, p2y, p4x, p4y);
+    double o3 = produtoVetorial(p3x, p3y, p4x, p4y, p1x, p1y);
+    double o4 = produtoVetorial(p3x, p3y, p4x, p4y, p2x, p2y);
+
+    if (((o1 > 0 && o2 < 0) || (o1 < 0 && o2 > 0)) &&
+        ((o3 > 0 && o4 < 0) || (o3 < 0 && o4 > 0))) {
+        return true;
+        }
+
+    if (o1 == 0 && naSegmento(p1x, p1y, p3x, p3y, p2x, p2y)) return true;
+    if (o2 == 0 && naSegmento(p1x, p1y, p4x, p4y, p2x, p2y)) return true;
+    if (o3 == 0 && naSegmento(p3x, p3y, p1x, p1y, p4x, p4y)) return true;
+    if (o4 == 0 && naSegmento(p3x, p3y, p2x, p2y, p4x, p4y)) return true;
+
+    return false;
+}
+
+bool linhaCruzaArestasDoPoligono(Poligono p, double x1, double y1, double x2, double y2) {
+    poligono* poli = (poligono*)p;
+
+    if (getTamanhoLista(poli->pontos) < 2) return false;
+
+    pont atual = getPrimeiroElementoLista(poli->pontos);
+
+    Pacote packPrimeiro = getPacoteElementoLista(atual);
+    Ponto ptPrimeiro = getDadosForma(packPrimeiro);
+    double xPrim = getXPonto(ptPrimeiro);
+    double yPrim = getYPonto(ptPrimeiro);
+
+    double xA = xPrim;
+    double yA = yPrim;
+
+    while (atual != NULL) {
+        pont proxNode = getProximoElementoLista(atual);
+        double xB, yB;
+
+        if (proxNode != NULL) {
+            Pacote pack = getPacoteElementoLista(proxNode);
+            Ponto pt = getDadosForma(pack);
+            xB = getXPonto(pt);
+            yB = getYPonto(pt);
+        } else {
+            xB = xPrim;
+            yB = yPrim;
+        }
+
+        if (segmentosSeInterceptam(x1, y1, x2, y2, xA, yA, xB, yB)) {
+            return true;
+        }
+
+        xA = xB;
+        yA = yB;
+        atual = proxNode;
+    }
+    return false;
+}
+
 bool pontoEhVerticeDoPoligono(Poligono p, double x, double y) {
     poligono* poli = (poligono*)p;
     pont atual = getPrimeiroElementoLista(poli->pontos);
@@ -160,6 +229,11 @@ bool verificarSobreposicao(Poligono p, Pacote forma) {
             if (pontoDentroPoligono(poli, x, y+h)) return true;
             if (pontoDentroPoligono(poli, x+w, y+h)) return true;
 
+            if (linhaCruzaArestasDoPoligono(poli, x, y, x + w, y)) return true;
+            if (linhaCruzaArestasDoPoligono(poli, x, y + h, x + w, y + h)) return true;
+            if (linhaCruzaArestasDoPoligono(poli, x, y, x, y + h)) return true;
+            if (linhaCruzaArestasDoPoligono(poli, x + w, y, x + w, y + h)) return true;
+
             return false;
         }
         case CIRCULO: {
@@ -180,7 +254,18 @@ bool verificarSobreposicao(Poligono p, Pacote forma) {
             double y1 = getY1Linha(form);
             double x2 = getX2Linha(form);
             double y2 = getY2Linha(form);
-            return pontoDentroPoligono(poli, x1, y1) || pontoDentroPoligono(poli, x2, y2);
+
+            if (pontoDentroPoligono(poli, x1, y1)) return true;
+            if (pontoDentroPoligono(poli, x2, y2)) return true;
+
+            double xm = (x1 + x2) / 2.0;
+            double ym = (y1 + y2) / 2.0;
+            if (pontoDentroPoligono(poli, xm, ym)) return true;
+
+            if (linhaCruzaArestasDoPoligono(poli, x1, y1, x2, y2)) return true;
+
+            return false;
+
         }
         case SEGMENTO: {
             double x1 = getX1Segmento(form);
