@@ -9,8 +9,6 @@
 
 #include "../retangulo.h"
 
-// --- FUNÇÕES AUXILIARES ---
-
 void verificar(int condicao, const char* mensagem) {
     if (condicao) {
         printf("\033[0;32m[OK]\033[0m %s\n", mensagem);
@@ -24,7 +22,6 @@ int sao_iguais(double a, double b) {
     return fabs(a - b) < 1e-6;
 }
 
-// --- TESTES ---
 
 void teste_criacao_leitura() {
     printf("\n--- Teste 1: Criacao e Getters ---\n");
@@ -34,14 +31,12 @@ void teste_criacao_leitura() {
 
     verificar(r != NULL, "O retangulo foi alocado");
 
-    // Verificações numéricas
     verificar(getIDRetangulo(r) == 5, "ID deve ser 5");
     verificar(sao_iguais(getXRetangulo(r), 10.0), "X deve ser 10.0");
     verificar(sao_iguais(getYRetangulo(r), 20.0), "Y deve ser 20.0");
     verificar(sao_iguais(getWRetangulo(r), 100.0), "W deve ser 100.0");
     verificar(sao_iguais(getHRetangulo(r), 50.0), "H deve ser 50.0");
 
-    // Verificações de String
     verificar(strcmp(getCorBRetangulo(r), "black") == 0, "Cor borda deve ser black");
     verificar(strcmp(getCorPRetangulo(r), "white") == 0, "Cor preenchimento deve ser white");
 
@@ -71,19 +66,15 @@ void teste_modificacao_numerica() {
 void teste_modificacao_cor_realloc() {
     printf("\n--- Teste 3: SetCor (Realloc) ---\n");
 
-    // Começa com string média
     Retangulo r = CriarRetangulo(1, 0, 0, 10, 10, "green", "yellow");
 
-    // 1. Aumentar string da borda
     char* corGrande = "dark_slate_blue_muito_longo";
     setCorBRetangulo(r, corGrande);
     verificar(strcmp(getCorBRetangulo(r), corGrande) == 0, "Cor borda expandida corretamente");
 
-    // 2. Diminuir string do preenchimento
     setCorPRetangulo(r, "red");
     verificar(strcmp(getCorPRetangulo(r), "red") == 0, "Cor preenchimento reduzida corretamente");
 
-    // 3. Teste cruzado (Trocar as duas)
     setCorBRetangulo(r, "#000");
     setCorPRetangulo(r, "#FFF");
 

@@ -7,25 +7,19 @@
 #include <string.h>
 #include <assert.h>
 
-// --- SUA FUNÇÃO (Copiada exatamente como você mandou) ---
 char* getNomeBase(char* nomeArq) {
-    // Busca a última barra ('/') para ignorar o caminho do diretório
     char* barra = strrchr(nomeArq, '/');
     char* Nome = (barra != NULL) ? barra + 1 : nomeArq;
 
-    // Busca o último ponto ('.') para encontrar a extensão
     char* ponto = strrchr(Nome, '.');
     int tamanhoBase;
 
     if (ponto == NULL) {
-        // Não há extensão, o nome base é o nome inteiro
         tamanhoBase = strlen(Nome);
     }else {
-        // O tamanho base é a distância entre o ínicio do Nome e o ponto
         tamanhoBase = ponto - Nome;
     }
 
-    // Aloca memória para a string resultante
     char* nomeBase = (char*) malloc(tamanhoBase + 1);
     if (nomeBase == NULL) {
         printf("Erro ao alocar memória de nomeBase!\n");
@@ -33,19 +27,16 @@ char* getNomeBase(char* nomeArq) {
         exit(1);
     }
 
-    // Copia a substring e adiciona o terminador nulo
+
     strncpy(nomeBase, Nome, tamanhoBase);
     nomeBase[tamanhoBase] = '\0';
 
     return nomeBase;
 }
 
-// --- FUNÇÃO AUXILIAR DE TESTE ---
 void testar_caso(const char* entrada, const char* esperado) {
     printf("Testando: [%s] ... ", entrada);
 
-    // Convertemos const char* para char* para passar na sua função
-    // (apenas para evitar warnings, já que sua função não altera a entrada)
     char* buffer = strdup(entrada);
 
     char* resultado = getNomeBase(buffer);
@@ -56,7 +47,7 @@ void testar_caso(const char* entrada, const char* esperado) {
         printf("\033[0;31m[FALHA]\033[0m\n");
         printf("   Esperado: '%s'\n", esperado);
         printf("   Recebido: '%s'\n", resultado);
-        exit(1); // Para o teste se falhar
+        exit(1);
     }
 
     free(resultado); // Limpa o malloc feito dentro de getNomeBase

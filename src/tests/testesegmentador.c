@@ -7,13 +7,11 @@
 #include <string.h>
 #include <math.h>
 
-// Headers das formas
 #include "../retangulo.h"
 #include "../circulo.h"
 #include "../linha.h"
 #include "../texto.h"
 
-// Headers estruturais
 #include "../segmentador.h"
 #include "../lista.h"
 #include "../segmento.h"
@@ -54,17 +52,14 @@ void teste_converte_retangulo() {
     printf("   Segmentos gerados: %d\n", qtd);
     verificar(qtd == 4, "Retangulo deve gerar 4 segmentos");
 
-    // Verifica um dos segmentos (o ultimo inserido, que é o da esquerda)
     pont node = getPrimeiroElementoLista(anteparos);
     Pacote p = getPacoteElementoLista(node);
     Segmento s = getDadosForma(p);
 
-    // Esquerda: (10, 60) -> (10, 10)
     verificar(sao_iguais(getX1Segmento(s), 10), "X1 do segmento esquerdo OK");
     verificar(sao_iguais(getY1Segmento(s), 60), "Y1 do segmento esquerdo OK");
 
     eliminarRetangulo(r);
-    // Nota: Em teste real, liberarLista(anteparos) deveria ser chamado
 }
 
 void teste_converte_circulo() {
@@ -91,12 +86,8 @@ void teste_converte_texto() {
 
     Lista anteparos = iniciarLista();
 
-    // Texto: "ABC" (3 chars).
-    // Largura Total = 10.0 * 3 = 30.0
-    // Ponto X = 100.0
     Texto t = CriarTexto(3, 100, 100, "black", "black", 'i', "ABC");
 
-    // 1. Caso 'i' (Inicio) -> Texto vai de 100 ate 130
     converteTextoSegmento(stdout, t, anteparos);
     Segmento s = getDadosForma(getPacoteElementoLista(getPrimeiroElementoLista(anteparos)));
 
@@ -104,9 +95,8 @@ void teste_converte_texto() {
     verificar(sao_iguais(getX1Segmento(s), 100.0), "Ancora 'i' X1 OK");
     verificar(sao_iguais(getX2Segmento(s), 130.0), "Ancora 'i' X2 OK");
 
-    // 2. Caso 'f' (Fim) -> Texto vai de 70 ate 100
     setATexto(t, 'f');
-    anteparos = iniciarLista(); // Reset simulado da lista
+    anteparos = iniciarLista();
     converteTextoSegmento(stdout, t, anteparos);
     s = getDadosForma(getPacoteElementoLista(getPrimeiroElementoLista(anteparos)));
 
@@ -114,12 +104,8 @@ void teste_converte_texto() {
     verificar(sao_iguais(getX1Segmento(s), 70.0), "Ancora 'f' X1 OK");
     verificar(sao_iguais(getX2Segmento(s), 100.0), "Ancora 'f' X2 OK");
 
-    // 3. Caso 'm' (Meio) -> Texto centralizado em 100
-    // Largura = 30. Metade = 15.
-    // X1 = 100 - 15 = 85.
-    // X2 = 100 + 15 = 115.
     setATexto(t, 'm');
-    anteparos = iniciarLista(); // Reset simulado
+    anteparos = iniciarLista();
     converteTextoSegmento(stdout, t, anteparos);
     s = getDadosForma(getPacoteElementoLista(getPrimeiroElementoLista(anteparos)));
 

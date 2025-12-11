@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Headers do projeto
 #include "../txt.h"
 #include "../forma.h"
 #include "../circulo.h"
@@ -26,7 +25,6 @@ void verificar(int condicao, const char* mensagem) {
     }
 }
 
-// Lê todo o conteúdo de um arquivo para uma string
 char* ler_arquivo_inteiro(const char* nome) {
     FILE* f = fopen(nome, "r");
     if (!f) return NULL;
@@ -52,7 +50,7 @@ void teste_escrita_relatorio() {
     const char* NOME_ARQ = "teste_relatorio.txt";
 
     // 1. Abrir Arquivo
-    Arquivo arq = abrirTXT((char*)NOME_ARQ); // Cast para evitar warning
+    Arquivo arq = abrirTXT((char*)NOME_ARQ);
     verificar(arq != NULL, "Arquivo aberto com sucesso");
 
     // 2. Criar Formas e Reportar
@@ -82,15 +80,12 @@ void teste_escrita_relatorio() {
     Pacote p5 = CriarPacote(s, SEGMENTO);
     reportarForma(arq, p5);
 
-    // 3. Fechar Arquivo (Para garantir flush no disco)
     fclose(arq);
 
-    // 4. Verificação (Lendo o que foi escrito)
     char* conteudo = ler_arquivo_inteiro(NOME_ARQ);
     verificar(conteudo != NULL, "Conteudo lido de volta");
 
     // Verifica se as strings chaves estão presentes
-    // Usamos strstr para buscar substrings dentro do arquivo
 
     // Verifica Círculo
     verificar(strstr(conteudo, "Círculo - (ID: 10)") != NULL, "Encontrou ID do Circulo");
@@ -114,8 +109,6 @@ void teste_escrita_relatorio() {
     // Limpeza
     free(conteudo);
 
-    // Libera memória das formas (Assumindo que liberarForma libera o pacote e a estrutura interna)
-    // Se você não tiver liberarForma exportada, use as específicas:
     eliminarCirculo(c); free(p1);
     eliminarRetangulo(r); free(p2);
     eliminarLinha(l); free(p3);

@@ -64,17 +64,15 @@ void teste_texto_dados_basicos() {
 
     verificar(t != NULL, "Texto alocado");
 
-    // Getters
     verificar(getIDTexto(t) == 1, "ID correto");
     verificar(sao_iguais(getXTexto(t), 10.5), "X correto");
     verificar(sao_iguais(getYTexto(t), 20.5), "Y correto");
     verificar(getATexto(t) == 'i', "Ancora correta");
 
-    // Setters
     setIDTexto(t, 50);
     setXTexto(t, 0.0);
     setYTexto(t, -5.5);
-    setATexto(t, 'm'); // meio
+    setATexto(t, 'm');
 
     verificar(getIDTexto(t) == 50, "ID alterado");
     verificar(sao_iguais(getXTexto(t), 0.0), "X alterado");
@@ -101,7 +99,7 @@ void teste_texto_strings_dinamicas() {
     verificar(quantidadeCaracteresTexto(t) == strlen(textoLongo), "Nova quantidade de caracteres correta");
 
     // 2. Modificar Cores
-    setCorBTexto(t, "#FFAA00"); // Hexadecimal maior que "red"
+    setCorBTexto(t, "#FFAA00");
     setCorPTexto(t, "cyan");
 
     verificar(strcmp(getCorBTexto(t), "#FFAA00") == 0, "Cor borda alterada");

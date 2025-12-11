@@ -9,7 +9,6 @@
 
 #include "../linha.h"
 
-// --- FUNÇÕES AUXILIARES ---
 
 void verificar(int condicao, const char* mensagem) {
     if (condicao) {
@@ -24,12 +23,10 @@ int sao_iguais(double a, double b) {
     return fabs(a - b) < 1e-6;
 }
 
-// --- TESTES ---
 
 void teste_criacao_leitura() {
     printf("\n--- Teste 1: Criacao e Getters ---\n");
 
-    // Cria linha: ID 1, (10,10) -> (20,20), Cor "black"
     Linha l = CriarLinha(1, 10.0, 10.0, 20.0, 20.0, "black");
 
     verificar(l != NULL, "A linha foi alocada");
@@ -70,12 +67,10 @@ void teste_modificacao_cor_realloc() {
 
     Linha l = CriarLinha(1, 0, 0, 10, 10, "red");
 
-    // Aumentar string
     char* corGrande = "#FF0000_vermelho_muito_intenso";
     setCorLinha(l, corGrande);
     verificar(strcmp(getCorLinha(l), corGrande) == 0, "Cor expandida corretamente");
 
-    // Diminuir string
     setCorLinha(l, "#000");
     verificar(strcmp(getCorLinha(l), "#000") == 0, "Cor reduzida corretamente");
 
@@ -85,18 +80,15 @@ void teste_modificacao_cor_realloc() {
 void teste_cor_complementar() {
     printf("\n--- Teste 4: Cor Complementar ---\n");
 
-    // Caso 1: Branco (#FFFFFF) -> Preto (#000000)
-    // 255,255,255 -> Inverso: 0,0,0
     Linha l1 = CriarLinha(1, 0,0,0,0, "#FFFFFF");
     char* comp1 = CorComplementarLinha(l1);
 
     printf("   Original: #FFFFFF -> Complementar: %s\n", comp1);
     verificar(strcmp(comp1, "#000000") == 0, "Complementar de Branco deve ser Preto");
 
-    free(comp1); // IMPORTANTE: CorComplementar faz malloc, temos que dar free
+    free(comp1);
     eliminarLinha(l1);
 
-    // Caso 2: Preto (#000000) -> Branco (#FFFFFF)
     Linha l2 = CriarLinha(2, 0,0,0,0, "#000000");
     char* comp2 = CorComplementarLinha(l2);
 
@@ -106,8 +98,6 @@ void teste_cor_complementar() {
     free(comp2);
     eliminarLinha(l2);
 
-    // Caso 3: Sem o Hash (AAAAAA) -> (555555)
-    // AA (Hex) = 170. 255 - 170 = 85. 85 (Hex) = 55.
     Linha l3 = CriarLinha(3, 0,0,0,0, "AAAAAA");
     char* comp3 = CorComplementarLinha(l3);
 
